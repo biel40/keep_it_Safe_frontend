@@ -1,10 +1,12 @@
 
 const routes = [
   {
-    path: '/',
-    component: () => import('layouts/MyLayout.vue'),
+    path: '',
+    component: () => import('layouts/ClientHeader.vue'),
     children: [
-      { path: '', component: () => import('pages/Index.vue') }
+      { path: 'price', component: () => import('pages/Client/Price.vue') },
+      { path: 'reservation', component: () => import('pages/Client/Reservation.vue') },
+      { path: 'schedule', component: () => import('pages/Client/Schedule.vue') }
     ]
   }
 ]

@@ -14,9 +14,9 @@ module.exports = function (ctx) {
 
     extras: [
       'roboto-font',
-      'material-icons' // optional, you are not bound to it
+      'material-icons', // optional, you are not bound to it
       // 'ionicons-v4',
-      // 'mdi-v3',
+      'mdi-v3',
       // 'fontawesome-v5',
       // 'eva-icons'
     ],
@@ -37,11 +37,23 @@ module.exports = function (ctx) {
         'QList',
         'QItem',
         'QItemSection',
-        'QItemLabel'
+        'QItemLabel',
+        'QTabs',
+        'QTab',
+        'QRouteTab',
+        'QAvatar',
+        'QMenu',
+        'QDialog',
+        'QCard',
+        'QCardSection',
+        'QCardActions',
+        'QSeparator',
+        'QInput',
       ],
 
       directives: [
-        'Ripple'
+        'Ripple',
+        'ClosePopup',
       ],
 
       // Quasar plugins
@@ -92,7 +104,7 @@ module.exports = function (ctx) {
         theme_color: '#027be3',
         icons: [
           {
-            'src': 'statics/icons/icon-128x128.png',
+            'src': 'https://st2.depositphotos.com/5266903/8772/v/950/depositphotos_87725254-stock-illustration-avion-flat-icon.jpg',
             'sizes': '128x128',
             'type': 'image/png'
           },
