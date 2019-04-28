@@ -10,71 +10,46 @@
               Keep it Safe  
             </div>
         </q-toolbar-title>
-          <q-btn flat outline rounded icon="account_circle" label="Accede"  size="20px" class="q-mr-md" no-caps @click="login=true"/>
+          <!-- <q-btn flat outline rounded icon="account_circle" :label="userName"  size="20px" class="q-mr-md" no-caps @click="loginDialog=true"/> -->
+          <q-btn flat outline rounded icon="account_circle" :label="userName"  size="20px" class="q-mr-md" no-caps >
+            <q-menu>
+          <q-list style="min-width: 100px">
+            <q-item clickable v-close-popup @click="miAccountDialog=true">
+              <q-item-section>Mi cuenta</q-item-section>
+            </q-item>
+            <q-item clickable v-close-popup @click="myReservationsDialog=true">
+              <q-item-section>Mis reservas</q-item-section>
+            </q-item>
+            <q-separator />
+            <q-item clickable v-close-popup @click="logout">
+              <q-item-section>Cerrar sesión</q-item-section>
+            </q-item>
+          </q-list>
+        </q-menu>
+          </q-btn>
       </q-toolbar>
 
       <q-tabs align="left" inline-label indicator-color="black" >
+<<<<<<< HEAD
         <q-route-tab icon="mail" to="/price" label="Precios" />
         <q-route-tab icon="mail" to="/schedule" label="Horario" />
         <q-route-tab icon="mail" to="/reservation" label="Reserva" />
+=======
+        <q-route-tab icon="mdi-currency-eur" to="/price" label="Precios" active-class="text-black"/>
+        <q-route-tab icon="mdi-calendar" to="/schedule" label="Horario" active-class="text-black"/>
+        <q-route-tab icon="mdi-briefcase-check" to="/reservation" label="Reserva" active-class="text-black"/>
+>>>>>>> cdf0ffd014d4c02d4661740df569d12555e84679
       </q-tabs>
     </q-header>
 
-    <q-dialog v-model="login">
-      <q-card class="bg-grey-12" style="width: 800px; max-width:  90vw;">
-        <q-card-section class="col-12 bg-grey-4">
-          <div class="text-h5 text-center text-grey-9">¡Bien venido a Keep it Safe!</div>
-          <div class="text-subtitle2 text-center text-grey-9">Regístrate y podrás reservar equipaje gratuitamente</div>
-        </q-card-section>
-        <q-separator class="col-12"/>
-        <q-card-section class="col-12 row flex justify-center">
-
-          <div class="flex column no-wrap col-12 col-md text-h6" >
-            <div>
-              Correo electronico
-              <q-input outlined v-model="text" placeholder="demo@keepitsafe.com" class="q-py-md  "/>
-            </div> 
-            <div>
-              Contraseña
-              <q-input outlined type="password" v-model="text" class="q-py-md" placeholder="*********"/>
-            </div>
-            <q-btn color="primary" label="Registrarse" size="md"  class="button-login  q-mt-md"/>
-
-
-            <q-item clickable class="flex items-center justify-center q-mt-lg item-border-radius-40 q-pd-xs col" dense="">
-              <q-icon color="grey-9" name="mdi-account-circle-outline" size="50px" class="q-mr-md"/>
-              <div class="flex column no-wrap justify-center">
-                <div class="text-center text-weight-light text-body2">
-                  ¿No tienes cuenta?
-                </div>
-                <div class="text-center ">
-                  Registrate aquí
-                </div>
-              </div>
-            </q-item>
-          </div>
-
-          <q-separator vertical v-if="!$q.screen.lt.md" inset  class="q-mx-md"/>
-          <!-- TODO insual error, not apear horizontal q-spacer, but when adding padding style if it apear -->
-          <q-separator inset style="padding:0.25px;" class="q-my-md" v-else />
-
-          <div class="flex column no-wrap justify-center col-12 col-md text-h6 ">
-              <div class="q-mb-xs text-center text-body1 text-grey-9 text-weight-light">o si lo prefieres</div>
-              <q-btn class="q-my-md" color="blue-10" icon="mdi-facebook" size="lg" no-wrap align="left">
-                <div class="q-pl-xl">
-                  ENTRA CON FACEBOOK
-                </div>
-              </q-btn>
-              <q-btn class="q-mt-md" color="blue-7" icon="mdi-google" size="lg" no-wrap align="left">
-                <div class="q-pl-xl">
-                  ENTRA CON GOOGLE
-                </div>
-              </q-btn>
-          </div>
-          
-        </q-card-section>
-        
-      </q-card>
+    <q-dialog v-model="loginDialog" transition-show="slide-down">
+      <LoginCard/>
+    </q-dialog>
+    <q-dialog v-model="miAccountDialog" transition-show="slide-down">
+      <MiAccountCard user="Object with user"/>
+    </q-dialog>
+    <q-dialog v-model="myReservationsDialog" transition-show="slide-down">
+      Reservations
     </q-dialog>
 
     <q-page-container>
@@ -84,18 +59,29 @@
 </template>
 
 <script>
+<<<<<<< HEAD
 
+=======
+import LoginCard from '../components/LoginCard';
+import MiAccountCard from '../components/MiAccountCard';
+>>>>>>> cdf0ffd014d4c02d4661740df569d12555e84679
 export default {
   data () {
     return {
-      login: false,
-      text: '',
+      userName: 'Accede',
+      loginDialog: false,
+      miAccountDialog: false,
+      myReservationsDialog: false
+    }
+  }, 
+  methods: {
+    logout(){
+      console.log("Log out")
     }
   },
-  mounted(){
-        console.log(this.$q.screen); 
-      },
-  methods:{
+  components:{
+    LoginCard,
+    MiAccountCard
   }
 }
 
