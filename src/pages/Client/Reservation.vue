@@ -1,11 +1,11 @@
 <template>
   <q-page class="flex">
 
-    <div class="col-8 column inline items-center">
+    <div class="col-10 row">
 
       <p id="reservationHeader" class="text-primary q-ml-xs q-mt-md header"> Reservar Equipaje </p>
 
-      <div id="divReservationForm" class="column q-mb-md">
+      <div id="divReservationForm" class="column q-mb-md col-10 q-ml-xl">
 
         <p class="formText"> DNI </p>
         <q-input class="q-ma-md" outlined v-model="modelDNI" label="DNI" />
@@ -33,7 +33,7 @@
           </q-input>
         </div>
 
-        <p class="formText" > Tipo equipaje </p>
+        <p class="formText" > Tipo de equipaje </p>
 
         <q-select class="q-mb-xl" filled v-model="model" :options="options" label="Tipo del Equipaje" />
 
@@ -43,28 +43,11 @@
 
     </div>
 
-    <div class="col-8 column q-mr-xl q-ml-xl q-mt-md">
-
-      <p id="commentaryText" class="text-primary justify-center"> Comentarios </p>
-
-      <!-- HACER ESTO COMPONENTE + OTRA PANTALLA -->
-      <div id="scrollAreaDiv" class="col-4">
-        <q-scroll-area style="height: 200px; max-width: 800px;">
-          <div v-for="n in 4" :key="n" class="q-py-xs q-pa-md">
-            Lorem ipsum dolor sit amet, consectetur adipisicing
-            elit, sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua.
-          </div>
-
-        </q-scroll-area>
-
-        <div class="flex row items-center">
-          <q-input class="q-ma-md col-9" rounded outlined v-model="modelComments" label="Mensaje" />
-          <q-btn class="" round color="primary" icon="send" />
-        </div>
-
+    <div class="row justify-end col-12">
+      <div class="col-6 column q-ml-xl q-mb-md q-mt-md ">
+        <p id="commentaryText" class="text-primary justify-center"> Comentarios </p>
+        <Comments> </Comments>
       </div>
-
     </div>
 
   </q-page>
@@ -75,6 +58,8 @@
 </style>
 
 <script>
+
+import Comments from '../../components/Comments.vue';
 
 export default {
   name: 'PageReservation',
@@ -94,6 +79,9 @@ export default {
   }, methods: {
     
   },
+  components:{
+    Comments
+  }
 }
 
 </script>

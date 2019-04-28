@@ -52,7 +52,7 @@ module.exports = function (ctx) {
         'QScrollArea',
         'QDate',
         'QPopupProxy',
-        'QSelect'
+        'QSelect',
       ],
 
       directives: [
@@ -72,6 +72,7 @@ module.exports = function (ctx) {
     supportIE: false,
 
     build: {
+      scopeHoisting: true,
       scopeHoisting: true,
       // vueRouterMode: 'history',
       // vueCompiler: true,

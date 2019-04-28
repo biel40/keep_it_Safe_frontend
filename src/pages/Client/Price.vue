@@ -26,23 +26,7 @@
 
       <p id="commentaryText" class="text-primary justify-center"> Comentarios </p>
 
-      <!-- HACER ESTO COMPONENTE + OTRA PANTALLA -->
-      <div id="scrollAreaDiv" class="col-12">
-        <q-scroll-area style="height: 200px; max-width: 800px;">
-          <div v-for="n in 4" :key="n" class="q-py-xs q-pa-md">
-            Lorem ipsum dolor sit amet, consectetur adipisicing
-            elit, sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua.
-          </div>
-        </q-scroll-area>
-
-        <div class="flex row items-center">
-          <q-input class="q-ma-md col-9" rounded outlined v-model="text" label="Mensaje" />
-          
-          <q-btn class="" round color="primary" icon="send" />
-          
-        </div>
-      </div>
+      <Comments></Comments>
 
     </div>
    
@@ -52,8 +36,13 @@
 
 <script>
 
+import Comments from '../../components/Comments.vue';
+
 export default {
-  name: 'PageIndex'
+  name: 'PageIndex',
+  components: {
+    Comments
+  }
 }
 
 </script>

@@ -30,15 +30,11 @@
       </q-toolbar>
 
       <q-tabs align="left" inline-label indicator-color="black" >
-<<<<<<< HEAD
-        <q-route-tab icon="mail" to="/price" label="Precios" />
-        <q-route-tab icon="mail" to="/schedule" label="Horario" />
-        <q-route-tab icon="mail" to="/reservation" label="Reserva" />
-=======
+
         <q-route-tab icon="mdi-currency-eur" to="/price" label="Precios" active-class="text-black"/>
         <q-route-tab icon="mdi-calendar" to="/schedule" label="Horario" active-class="text-black"/>
         <q-route-tab icon="mdi-briefcase-check" to="/reservation" label="Reserva" active-class="text-black"/>
->>>>>>> cdf0ffd014d4c02d4661740df569d12555e84679
+
       </q-tabs>
     </q-header>
 
@@ -59,12 +55,10 @@
 </template>
 
 <script>
-<<<<<<< HEAD
 
-=======
 import LoginCard from '../components/LoginCard';
 import MiAccountCard from '../components/MiAccountCard';
->>>>>>> cdf0ffd014d4c02d4661740df569d12555e84679
+
 export default {
   data () {
     return {
