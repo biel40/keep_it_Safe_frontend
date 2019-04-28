@@ -15,8 +15,8 @@
 
       <q-tabs align="left" inline-label indicator-color="black" >
         <q-route-tab icon="mail" to="/price" label="Precios" />
-        <q-route-tab icon="mail" to="/reservation" label="Horario" />
-        <q-route-tab icon="mail" to="/schedule" label="Reserva" />
+        <q-route-tab icon="mail" to="/schedule" label="Horario" />
+        <q-route-tab icon="mail" to="/reservation" label="Reserva" />
       </q-tabs>
     </q-header>
 
@@ -84,6 +84,7 @@
 </template>
 
 <script>
+
 export default {
   data () {
     return {
@@ -97,4 +98,5 @@ export default {
   methods:{
   }
 }
+
 </script>
