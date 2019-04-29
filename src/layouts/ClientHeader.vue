@@ -30,9 +30,11 @@
       </q-toolbar>
 
       <q-tabs align="left" inline-label indicator-color="black" >
+
         <q-route-tab icon="mdi-currency-eur" to="/price" label="Precios" active-class="text-black"/>
         <q-route-tab icon="mdi-calendar" to="/schedule" label="Horario" active-class="text-black"/>
         <q-route-tab icon="mdi-briefcase-check" to="/reservation" label="Reserva" active-class="text-black"/>
+
       </q-tabs>
     </q-header>
 
@@ -53,6 +55,7 @@
 </template>
 
 <script>
+
 import LoginCard from '../components/LoginCard';
 import MyAccountCard from '../components/MyAccountCard';
 import MyReservationList from '../components/MyReservationList';
@@ -76,4 +79,5 @@ export default {
     MyReservationList
   }
 }
+
 </script>

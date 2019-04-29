@@ -109,6 +109,7 @@
 
 <script>
 import LoginWithSocialMedia from './LoginWithSocialMedia'
+
 export default {
     name: 'LoginCard',
     data() {

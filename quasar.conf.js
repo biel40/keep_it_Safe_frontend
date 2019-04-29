@@ -49,7 +49,11 @@ module.exports = function (ctx) {
         'QCardActions',
         'QSeparator',
         'QInput',
-        'QSpace'
+        'QSpace',
+        'QScrollArea',
+        'QDate',
+        'QPopupProxy',
+        'QSelect',
       ],
 
       directives: [
@@ -69,6 +73,7 @@ module.exports = function (ctx) {
     supportIE: false,
 
     build: {
+      scopeHoisting: true,
       scopeHoisting: true,
       // vueRouterMode: 'history',
       // vueCompiler: true,
