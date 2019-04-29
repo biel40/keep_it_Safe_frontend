@@ -12,19 +12,19 @@
         </q-toolbar-title>
           <!-- <q-btn flat outline rounded icon="account_circle" :label="userName"  size="20px" class="q-mr-md" no-caps @click="loginDialog=true"/> -->
           <q-btn flat outline rounded icon="account_circle" :label="userName"  size="20px" class="q-mr-md" no-caps >
-            <q-menu>
-          <q-list style="min-width: 100px">
-            <q-item clickable v-close-popup @click="miAccountDialog=true">
-              <q-item-section>Mi cuenta</q-item-section>
-            </q-item>
-            <q-item clickable v-close-popup @click="myReservationsDialog=true">
-              <q-item-section>Mis reservas</q-item-section>
-            </q-item>
-            <q-separator />
-            <q-item clickable v-close-popup @click="logout">
-              <q-item-section>Cerrar sesión</q-item-section>
-            </q-item>
-          </q-list>
+          <q-menu>
+            <q-list style="min-width: 100px">
+              <q-item clickable v-close-popup @click="miAccountDialog=true">
+                <q-item-section>Mi cuenta</q-item-section>
+              </q-item>
+              <q-item clickable v-close-popup @click="myReservationsDialog=true">
+                <q-item-section>Mis reservas</q-item-section>
+              </q-item>
+              <q-separator />
+              <q-item clickable v-close-popup @click="logout">
+                <q-item-section>Cerrar sesión</q-item-section>
+              </q-item>
+            </q-list>
         </q-menu>
           </q-btn>
       </q-toolbar>
@@ -40,10 +40,10 @@
       <LoginCard/>
     </q-dialog>
     <q-dialog v-model="miAccountDialog" transition-show="slide-down">
-      <MiAccountCard user="Object with user"/>
+      <MyAccountCard user="Object with user"/>
     </q-dialog>
     <q-dialog v-model="myReservationsDialog" transition-show="slide-down">
-      Reservations
+      <MyReservationList/>
     </q-dialog>
 
     <q-page-container>
@@ -54,7 +54,8 @@
 
 <script>
 import LoginCard from '../components/LoginCard';
-import MiAccountCard from '../components/MiAccountCard';
+import MyAccountCard from '../components/MyAccountCard';
+import MyReservationList from '../components/MyReservationList';
 export default {
   data () {
     return {
@@ -71,7 +72,8 @@ export default {
   },
   components:{
     LoginCard,
-    MiAccountCard
+    MyAccountCard,
+    MyReservationList
   }
 }
 </script>
