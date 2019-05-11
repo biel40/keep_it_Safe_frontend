@@ -10,10 +10,11 @@
 
         </q-scroll-area>
 
-        <div class="flex row items-center q-mt-md">
-          <q-input class="q-ma-md col-9" rounded outlined v-model="model" label="Mensaje" />
+        <div class="flex row items-center q-mt-xs">
+          <q-input class="q-ma-xs col-10" rounded outlined v-model="model" label="Mensaje" />
           <q-btn class="" round color="primary" icon="send" />
         </div>
+        
     </div>
 
 </template>

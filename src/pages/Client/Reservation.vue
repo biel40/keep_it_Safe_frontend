@@ -8,16 +8,16 @@
       <div id="divReservationForm" class="column q-mb-md col-10 q-ml-xl">
 
         <p class="formText"> DNI </p>
-        <q-input class="q-ma-md" outlined v-model="modelDNI" label="DNI" />
+        <q-input class="q-ma-md" outlined v-model="modelDNI"  />
 
         <p class="formText"> Nombre </p>
-        <q-input class="q-ma-md" outlined v-model="modelNombre" label="Nombre" />
+        <q-input class="q-ma-md" outlined v-model="modelNombre" />
 
         <p class="formText"> Primer Apellido </p>
-        <q-input class="q-ma-md" outlined v-model="modelPrimerApellido" label="Primer Apellido" />
+        <q-input class="q-ma-md" outlined v-model="modelPrimerApellido" />
 
         <p class="formText"> Segundo Apellido </p>
-        <q-input class="q-ma-md" outlined v-model="modelSegundoApellido" label="Segundo Apellido" />
+        <q-input class="q-ma-md" outlined v-model="modelSegundoApellido" />
 
         <p class="formText"> Día de Reserva </p>
 
@@ -43,8 +43,8 @@
 
     </div>
 
-    <div class="row justify-end col-12">
-      <div class="col-6 column q-ml-xl q-mb-md q-mt-md ">
+    <div class="row justify-end col-7 q-mr-md">
+      <div class="col-7 column q-ml-xl q-mb-xs q-mt-md ">
         <p id="commentaryText" class="text-primary justify-center"> Comentarios </p>
         <Comments> </Comments>
       </div>
