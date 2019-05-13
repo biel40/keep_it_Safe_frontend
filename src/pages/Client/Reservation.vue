@@ -66,7 +66,6 @@
         <p class="formText">Tipo de equipaje</p>
 
         <q-select class="q-mb-xl" outlined v-model="size" :options="options" dense/>
-        {{size}}
         <q-btn color="primary" label="GENERAR FACTURA"/>
       </div>
     </div>
