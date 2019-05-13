@@ -10,8 +10,8 @@
               Keep it Safe  
             </div>
         </q-toolbar-title>
-          <!-- <q-btn flat outline rounded icon="account_circle" :label="userName"  size="20px" class="q-mr-md" no-caps @click="loginDialog=true"/> -->
-          <q-btn flat outline rounded icon="account_circle" :label="userName"  size="20px" class="q-mr-md" no-caps >
+           <q-btn flat outline rounded icon="account_circle" :label="userName"  size="20px" class="q-mr-md" no-caps @click="loginDialog=true"/>
+          <!--<q-btn flat outline rounded icon="account_circle" :label="userName"  size="20px" class="q-mr-md" no-caps > -->
           <q-menu>
             <q-list style="min-width: 100px">
               <q-item clickable v-close-popup @click="miAccountDialog=true">

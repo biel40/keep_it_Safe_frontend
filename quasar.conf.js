@@ -54,6 +54,7 @@ module.exports = function (ctx) {
         'QDate',
         'QPopupProxy',
         'QSelect',
+        'QTime'
       ],
 
       directives: [
@@ -64,10 +65,10 @@ module.exports = function (ctx) {
       // Quasar plugins
       plugins: [
         'Notify'
-      ]
+      ],
 
       // iconSet: 'ionicons-v4'
-      // lang: 'de' // Quasar language
+       lang: 'es' // Quasar language
     },
 
     supportIE: false,
