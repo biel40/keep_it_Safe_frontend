@@ -1,8 +1,8 @@
 <template>
   <div style="height: 50vh; width: 350px; max-width: 80vw;">
-    <q-card>
+    <q-card ref="card"  class="background-color-app-light"> 
       <q-item>
-        <q-scroll-area style="height: 50vh; width: 350px; max-width: 80vw;">
+        <q-scroll-area   ref="scrollAreaComments" style="height: 50vh; width: 350px; max-width: 80vw;" :thumb-style="scrollStyle">
           <div v-for="number in 10" :key="number" class="q-py-xs q-pa-md">
             Lorem ipsum dolor sit amet, consectetur adipisicing
             elit, sed do eiusmod tempor incididunt ut labore et
@@ -22,11 +22,25 @@
 
 <script>
 export default {
-  name: 'Comments',
+  name: 'ClientComments',
   data () {
     return {
         model: '',
     }
+  },
+  computed:{
+    scrollStyle () {
+      return {
+        borderRadius: '5px',
+        backgroundColor: '#43a047',
+        width: '5px',
+        opacity: 0.75
+      }
+    }
+  },
+  mounted(){
+    // TODO get height and change the 1000 number
+    this.$refs.scrollAreaComments.setScrollPosition (1000, 0) ;
   }
 }
 </script>

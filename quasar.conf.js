@@ -111,7 +111,7 @@ module.exports = function (ctx) {
         theme_color: '#027be3',
         icons: [
           {
-            'src': 'https://st2.depositphotos.com/5266903/8772/v/950/depositphotos_87725254-stock-illustration-avion-flat-icon.jpg',
+            'src': 'statics/icons/icon-128x128.png',
             'sizes': '128x128',
             'type': 'image/png'
           },

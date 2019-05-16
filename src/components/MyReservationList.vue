@@ -1,6 +1,16 @@
 <template>
   <q-card style="width: 900px; max-width:90vw;">
-    <q-card-sectio></q-card-sectio>
+    <q-card-sectio>
+      <q-list>
+          <p class="text-center q-py-lg text-h4">Mis reservas</p>
+          <q-item class="fex row justify-between" v-for="reservation in reservations" :key="reservation.id">
+            <div> <span class="text-h6 q-mr-xs">Código reserva</span>  {{ reservation.id }}</div>
+            <div>{{ reservation.sizes }}</div>
+            <div>{{ reservation.Price }}</div>
+            <q-btn color="negative">Cancelar</q-btn>
+          </q-item>
+      </q-list>
+    </q-card-sectio>
   </q-card>
 </template>
 

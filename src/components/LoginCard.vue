@@ -38,7 +38,7 @@
       <q-separator inset style="padding:0.25px;" class="q-my-md" v-else />
 
       <div class="flex column no-wrap justify-center col-12 col-md text-h6 ">
-          <LoginWithSocialMedia />
+          <login-with-social-media />
       </div>
     </q-card-section>
   </q-card>
@@ -100,7 +100,7 @@
         <!-- TODO insual error, not apear horizontal q-spacer, but when adding padding style if it apear -->
         <q-separator inset style="padding:0.25px;" class="q-my-md" v-else />
         <div class="flex column no-wrap justify-center col-12 col-md text-h6 ">
-            <LoginWithSocialMedia />
+            <login-with-social-media />
         </div>
     </q-card-section>
   </q-card>

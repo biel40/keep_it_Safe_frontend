@@ -29,7 +29,7 @@
 
     <div class="col-12 col-md-4 q-mt-md" v-if="!$q.screen.lt.md">
       <p id="commentaryText" class="text-primary justify-center">Comentarios</p>
-      <Comments></Comments>
+      <client-comments></client-comments>
     </div>
   </q-page>
 </template>
@@ -39,12 +39,12 @@
 </style>
 
 <script>
-import Comments from "../../components/Comments.vue";
+import ClientComments from "../../components/ClientComments.vue";
 import moment from "../../../node_modules/moment";
 export default {
   name: "PageIndex",
   components: {
-    Comments
+    ClientComments
   }
 };
 </script>

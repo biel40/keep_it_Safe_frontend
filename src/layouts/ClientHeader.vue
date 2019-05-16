@@ -1,17 +1,25 @@
 <template>
-  <q-layout view="hHh LpR fFf">
-    <q-header elevated class="bg-primary text-white ">
+  <q-layout view="hHh LpR fFf" class="bg">
+    <q-header elevated class="bg-primary text-white">
       <q-toolbar class="flex row items-center justify-center">
         <q-toolbar-title class="flex row items-center">
-            <q-avatar square class="q-my-md" >
-              <img src="~assets/icono.png" alt="icon keep it safe">
-            </q-avatar>
-            <div class="text-h5">
-              Keep it Safe  
-            </div>
+          <q-avatar square class="q-my-md">
+            <img src="~assets/icono.png" alt="icon keep it safe">
+          </q-avatar>
+          <div class="text-h5">Keep it Safe</div>
         </q-toolbar-title>
-           <q-btn flat outline rounded icon="account_circle" :label="userName"  size="20px" class="q-mr-md" no-caps @click="loginDialog=true"/>
-          <!--<q-btn flat outline rounded icon="account_circle" :label="userName"  size="20px" class="q-mr-md" no-caps > -->
+        <!-- Uncomment the following line and comment the another to change the functionality -->
+        <!--  <q-btn flat outline rounded icon="account_circle" :label="userName"  size="20px" class="q-mr-md" no-caps @click="loginDialog=true"/> -->
+        <q-btn
+          flat
+          outline
+          rounded
+          icon="account_circle"
+          :label="userName"
+          size="20px"
+          class="q-mr-md"
+          no-caps
+        >
           <q-menu>
             <q-list style="min-width: 100px">
               <q-item clickable v-close-popup @click="miAccountDialog=true">
@@ -20,21 +28,24 @@
               <q-item clickable v-close-popup @click="myReservationsDialog=true">
                 <q-item-section>Mis reservas</q-item-section>
               </q-item>
-              <q-separator />
+              <q-separator/>
               <q-item clickable v-close-popup @click="logout">
                 <q-item-section>Cerrar sesión</q-item-section>
               </q-item>
             </q-list>
-        </q-menu>
-          </q-btn>
+          </q-menu>
+        </q-btn>
       </q-toolbar>
 
-      <q-tabs align="left" inline-label indicator-color="black" >
-
+      <q-tabs align="left" inline-label indicator-color="black">
         <q-route-tab icon="mdi-currency-eur" to="/price" label="Precios" active-class="text-black"/>
         <q-route-tab icon="mdi-calendar" to="/schedule" label="Horario" active-class="text-black"/>
-        <q-route-tab icon="mdi-briefcase-check" to="/reservation" label="Reserva" active-class="text-black"/>
-
+        <q-route-tab
+          icon="mdi-briefcase-check"
+          to="/reservation"
+          label="Reserva"
+          active-class="text-black"
+        />
       </q-tabs>
     </q-header>
 
@@ -48,36 +59,34 @@
       <MyReservationList/>
     </q-dialog>
 
-    <q-page-container>
-      <router-view />
+    <q-page-container class="background-color-app">
+      <router-view/>
     </q-page-container>
   </q-layout>
 </template>
 
 <script>
-
-import LoginCard from '../components/LoginCard';
-import MyAccountCard from '../components/MyAccountCard';
-import MyReservationList from '../components/MyReservationList';
+import LoginCard from "../components/LoginCard";
+import MyAccountCard from "../components/MyAccountCard";
+import MyReservationList from "../components/MyReservationList";
 export default {
-  data () {
+  data() {
     return {
-      userName: 'Accede',
+      userName: "Accede",
       loginDialog: false,
       miAccountDialog: false,
       myReservationsDialog: false
-    }
-  }, 
+    };
+  },
   methods: {
-    logout(){
-      console.log("Log out")
+    logout() {
+      console.log("Log out");
     }
   },
-  components:{
+  components: {
     LoginCard,
     MyAccountCard,
     MyReservationList
   }
-}
-
+};
 </script>
