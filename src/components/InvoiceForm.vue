@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <p class="text-primary q-ml-xs header">Reservar Equipaje</p>
+  <div class="flex column">
+    <p class="text-primary header">Reservar Equipaje</p>
 
     <p class="formText">DNI</p>
     <q-input class="q-mb-md" outlined v-model="DNI" dense/>
@@ -62,21 +62,36 @@
     </div>
 
     <p class="formText">Tipo de equipaje</p>
-    <div class="flex row no-wrap justify-between q-mb-xl">
-      <q-select class="col-10" outlined v-model="size" :options="options" dense/>
-      <q-btn color="primary" round icon="add"/>
-    </div>
+    <q-list padding class="rounded-borders text-primary text-h6 q-mb-md">
+      <q-item class="flex row no-wrap justify-between items-center q-pa-md" v-for="luggage in sizes" :key="luggage.type">
+        Maleta {{luggage}}
+        <div class="text-h6 flex column no-wrap items-center">
+          <div class="q-mb-xs">
+            <span class="text-center">Cantidad</span>
+          </div>
+          <div>
+            <q-btn dense color="green-9" class="q-mr-md" icon="add" round @click="addLuggage('m')"/>
+            {{ this.sizes[1].count }}
+            <q-btn dense color="red" class="q-ml-md" icon="remove" round @click="removeLuggage('m')"/>
+          </div>
+        </div>
+      </q-item>
+    </q-list>
     <q-btn color="primary" label="GENERAR FACTURA"/>
   </div>
 </template>
 
 <script>
 import moment from "../../node_modules/moment";
+let Luggage = function(type, fullName) {
+  this.type = type;
+  this.count = 0;
+  this.fullName = fullName;
+};
 export default {
   name: "InvoiceForm",
   data() {
     return {
-      size: "",
       DNI: "",
       nombre: "",
       primerApellido: "",
@@ -85,12 +100,8 @@ export default {
       initTime: "",
       finishTime: "",
       finishDate: "",
-      // La información se tiene que extraer del back-end. Esto es temporal.
-      options: [
-        { label: "Maleta Pequeña", value: 0 },
-        { label: "Maleta Mediana", value: 1 },
-        { label: "Maleta Grande", value: 3 }
-      ]
+      sizes: [new Luggage("s", "mequeña"), new Luggage("m", "mediana"), new Luggage("g", "grande")],
+      message: "Unicamente se pueden añadir 5 matelas como máximo"
     };
   },
   created() {
@@ -99,6 +110,30 @@ export default {
     this.finishDate = now.format("YYYY/MM/DD");
     this.initTime = now.format("HH:mm");
     this.finishTime = now.format("HH:mm");
+  },
+  methods: {
+    addLuggage(type) {
+        let luggage = this.findLuggage(type);
+        if (type === luggage.type) {
+          luggage;
+          if (luggage.count === 5) {
+            this.$q.notify({ message: this.message, color: "primary" });
+          } else {
+            luggage.count++;
+          }
+        }
+    },
+    removeLuggage(type) {
+      let luggage = this.findLuggage(type);
+      if (luggage.count !== 0) {
+        luggage.count--;
+      }
+    },
+    findLuggage(type){
+      return this.sizes.find(luggage => {
+        return type === luggage.type; 
+      });
+    }
   }
 };
 </script>
