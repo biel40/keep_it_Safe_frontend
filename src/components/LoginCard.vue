@@ -134,6 +134,13 @@ export default {
             this.isLoging = !this.isLoging
         },
         doLogin() {
+          if(this.loginEmail === "client@gmail.com" && this.loginPassword === "client"){
+              localStorage.setItem("validation", JSON.stringify([true, "U"]));
+          }else if(this.loginEmail === "employee@gmail.com" && this.loginPassword === "employee"){
+              localStorage.setItem("validation", JSON.stringify([true, "E"]));
+          }else if(this.loginEmail === "admin@gmail.com" && this.loginPassword === "admin"){
+              localStorage.setItem("validation", JSON.stringify([true, "A"]));
+          }
             console.log("do something - Login");
         },
         doRegister() {
