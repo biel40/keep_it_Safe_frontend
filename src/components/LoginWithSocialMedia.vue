@@ -1,7 +1,7 @@
 <template>
   <div class="flex column no-wrap justify-center">
     <div class="q-mb-xs text-center text-body1 text-grey-9 text-weight-light">o si lo prefieres</div>
-    <q-btn class="q-my-md" color="blue-10" icon="mdi-facebook" size="lg" no-wrap align="left">
+    <q-btn class="q-my-md" color="blue-10" icon="mdi-facebook" size="lg" no-wrap align="left" @click="loginWithFacebook">
       <div class="q-pl-md">ENTRA CON FACEBOOK</div>
     </q-btn>
     <q-btn
@@ -27,9 +27,22 @@ export default {
   methods: {
     loginWithGoogle() {
       this.$axios
-        .post("localhost:8081/loginGoogle")
+        //.post("localhost:8081/loginGoogle")
+        .post("http://localhost:8082/useAppGoogle")
         .then(function(response) {
-          console.log("the response",response);
+          console.log(response.data);
+          window.location.href = response.data;
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    },
+    loginWithFacebook(){
+        this.$axios
+        .post("http://localhost:8082/useAppFacebook")
+        .then(function(response) {
+          console.log(response.data);
+          window.location.href = response.data;
         })
         .catch(function(error) {
           console.log(error);
