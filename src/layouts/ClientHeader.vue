@@ -9,8 +9,8 @@
           <div class="text-h5">Keep it Safe</div>
         </q-toolbar-title>
         <!-- Uncomment the following line and comment the another to change the functionality -->
-        <!--  <q-btn flat outline rounded icon="account_circle" :label="userName"  size="20px" class="q-mr-md" no-caps @click="loginDialog=true"/> -->
-        <q-btn
+        <q-btn flat outline rounded icon="account_circle" :label="userName"  size="20px" class="q-mr-md" no-caps @click="loginDialog=true"/>
+        <!-- <q-btn
           flat
           outline
           rounded
@@ -34,7 +34,7 @@
               </q-item>
             </q-list>
           </q-menu>
-        </q-btn>
+        </q-btn> -->
       </q-toolbar>
 
       <q-tabs align="left" inline-label indicator-color="black">
@@ -72,6 +72,7 @@ import MyReservationList from "../components/MyReservationList";
 export default {
   data() {
     return {
+      rol: 'U',
       userName: "Accede",
       loginDialog: false,
       miAccountDialog: false,
