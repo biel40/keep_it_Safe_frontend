@@ -1,12 +1,13 @@
 <template>
-  <q-page class="flex row">
+  <q-page class="flex row items-center justify-center">
     <div class="col-12 col-md-8 row q-mt-md">
       <div class="column q-mb-md col-8 q-ml-xl">
-        <invoice-form ref="invoice" title="ALGO"/>
+        <invoice-form ref="invoice" title="Generar factura"/>
       </div>
     </div>
-
-    <tiket :lugagges="lugagges" :date="date"/>
+    <div class="col-12 col-md-4" v-if="!$q.screen.lt.md">
+      <tiket :luggages="luggages" :date="date" user="Juan Ramón Giménez"/>
+    </div>
   </q-page>
 </template>
 
@@ -22,7 +23,7 @@ export default {
   data() {
     return {
       date: null,
-      lugagges: null
+      luggages: null
     };
   },
   components: {
@@ -31,7 +32,7 @@ export default {
   },
   mounted() {
     this.date = this.$refs.invoice.getDate();
-    this.lugagges = this.$refs.invoice.getLugagges();
+    this.luggages = this.$refs.invoice.getLuggages();
   }
 };
 </script>
