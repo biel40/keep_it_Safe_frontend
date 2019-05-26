@@ -14,6 +14,7 @@
       @click="loginWithGoogle"
     >
       <div class="q-pl-md">ENTRA CON GOOGLE</div>
+
     </q-btn>
   </div>
 </template>
@@ -27,8 +28,7 @@ export default {
   methods: {
     loginWithGoogle() {
       this.$axios
-        //.post("localhost:8081/loginGoogle")
-        .post("http://localhost:8082/useAppGoogle")
+        .post("http://localhost:8081/loginGoogle")
         .then(function(response) {
           console.log(response.data);
           window.location.href = response.data;
@@ -39,7 +39,7 @@ export default {
     },
     loginWithFacebook(){
         this.$axios
-        .post("http://localhost:8082/useAppFacebook")
+        .post("http://localhost:8081/loginFacebook")
         .then(function(response) {
           console.log(response.data);
           window.location.href = response.data;

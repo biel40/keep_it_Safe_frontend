@@ -47,7 +47,7 @@
       <div class="col-12 flex justify-end">
         <q-btn size="10px" icon="close" flat round dense v-close-popup />
       </div>
-      <div class="text-h5 text-center text-grey-9">¡Bien venido a Keep it Safe!</div>
+      <div class="text-h5 text-center text-grey-9">¡Bienvenido a Keep it Safe!</div>
       <div class="text-subtitle2 text-center text-grey-9">Regístrate y podrás reservar equipaje gratuitamente</div>
     </q-card-section>
     <q-separator class="col-12" />
@@ -134,17 +134,33 @@ export default {
             this.isLoging = !this.isLoging
         },
         doLogin() {
-          if(this.loginEmail === "client@gmail.com" && this.loginPassword === "client"){
-              localStorage.setItem("validation", JSON.stringify([true, "U"]));
-          }else if(this.loginEmail === "employee@gmail.com" && this.loginPassword === "employee"){
-              localStorage.setItem("validation", JSON.stringify([true, "E"]));
-          }else if(this.loginEmail === "admin@gmail.com" && this.loginPassword === "admin"){
-              localStorage.setItem("validation", JSON.stringify([true, "A"]));
-          }
-            console.log("do something - Login");
+          // Hacemos un POST con el email y la contraseña del usuario que quiere loguearse
+          this.$axios
+          .post("http://localhost:8081/localLogin", {
+              email: this.loginEmail,
+              password: this.loginPassword
+          })
+          .then(function(response) {
+            // Si la respuesta es un 401, significa que se ha equivocado en el Login
+            if (response.status == 401) {
+              console.log("Sorry, credentials were wrong, please try again.");
+            }
+            console.log(response.data);
+          })
+          .catch(function(error) {
+            console.log(error);
+          });
+
         },
         doRegister() {
-            console.log("do something - Register");
+            // Falta implementar el registro de usuarios.
+            this.$axios.post("http://localhost:8081/user")
+            .then(function(response) {
+              console.log(response.data);        
+            })
+            .catch(function(error) {
+              console.log(error);
+            });
         }
     }
 }
