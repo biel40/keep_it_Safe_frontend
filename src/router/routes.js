@@ -8,6 +8,7 @@ const routes = [
       { path: 'reservation', component: () => import('pages/Client/Reservation.vue') },
       { path: 'schedule', component: () => import('pages/Client/Schedule.vue') },
       { path: 'checkIn', component: () => import('pages/Employee/CheckingLugage.vue') },
+      { path: 'createE', component: () => import('pages/Admin/CreateEmployee.vue') },
       
     ]
   }

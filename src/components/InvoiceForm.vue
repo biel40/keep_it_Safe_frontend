@@ -1,6 +1,6 @@
 <template>
   <div class="flex column">
-    <p class="text-primary header">Reservar Equipaje</p>
+    <p class="text-primary header">{{title}}</p>
     <div class="flex column no-wrap">
       <div class="col-12 flex row no-wrap justify-between">
         <div class="col-5">
@@ -130,7 +130,7 @@
 </template>
 
 <script>
-import moment, { min } from "../../node_modules/moment";
+import moment from "../../node_modules/moment";
 let Luggage = function(type, fullName) {
   this.type = type;
   this.count = 0;
@@ -155,7 +155,7 @@ export default {
         finishDate: ""
       },
       luggages: [
-        new Luggage("s", "mequeña"),
+        new Luggage("s", "pequeña"),
         new Luggage("m", "mediana"),
         new Luggage("g", "grande")
       ],
@@ -176,7 +176,7 @@ export default {
         if (luggage.count === 5) {
           this.$q.notify({
             message: this.message,
-            color: "primary",
+            color: "red-10",
             timeout: 1500
           });
         } else {
@@ -202,10 +202,11 @@ export default {
     getDate(){
       return this.InvoiceDate;
     },
-    getLugagges(){
+    getLuggages(){
       return this.luggages;
     }
-  }
+  },
+  props: ['title']
 };
 </script>
 

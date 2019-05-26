@@ -19,7 +19,7 @@
 import InvoiceForm from "../../components/InvoiceForm.vue";
 import Tiket from "../../components/Tiket.vue";
 export default {
-  name: "CheckingLuggage",
+  name: "ValidateInvoice",
   data() {
     return {
       date: null,
@@ -30,9 +30,5 @@ export default {
     InvoiceForm,
     Tiket
   },
-  mounted() {
-    this.date = this.$refs.invoice.getDate();
-    this.luggages = this.$refs.invoice.getLuggages();
-  }
 };
 </script>

@@ -69,6 +69,7 @@
 import LoginCard from "../components/LoginCard";
 import MyAccountCard from "../components/MyAccountCard";
 import MyReservationList from "../components/MyReservationList";
+
 export default {
   data() {
     return {
