@@ -53,36 +53,9 @@
     <q-separator class="col-12" />
     <q-card-section class="col-12 row flex justify-center">
       <div class="flex column no-wrap col-12 col-md text-h6">
-        <div>
-          Nombre
-          <q-input outlined v-model="name" class="" dense />
-        </div>
-        <div>
-          Primer apellido
-          <q-input outlined v-model="surname" class="input-register" dense />
-        </div>
-        <div>
-          Segundo apellido
-          <q-input outlined v-model="secondSurname" class="input-register" dense />
-        </div>
-        <div>
-          DNI/NIE
-          <q-input outlined v-model="dni" class="input-register" dense placeholder="aqui iran las restrigciones" />
-        </div>
-        <div>
-          Correo electrónico
-          <q-input type="email" outlined v-model="email" class="input-register" dense />
-        </div>
-        <div>
-          Contraseña
-          <q-input outlined type="password" v-model="password" class="input-register" dense placeholder="tipo mayusculas y tal XD" />
-        </div>
-        <div>
-          Repite contraseña
-          <q-input outlined type="password" v-model="repeatPassword" class="input-register" dense placeholder="o que solo 8 como mucho" />
-        </div>
-
-        <q-btn color="primary" label="Registrarse" size="md" class="button-login  q-mt-md" @click="doRegister" />
+        <q-item>
+          <register-form buttonName="Registrate" isUserView/>
+        </q-item>
 
         <q-item clickable class="flex items-center justify-center q-mt-lg item-border-radius-40 q-pd-xs col" @click="changeView">
           <q-icon color="grey-9" name="mdi-account-circle-outline" size="50px" class="q-mr-md" />
@@ -109,6 +82,7 @@
 
 <script>
 import LoginWithSocialMedia from './LoginWithSocialMedia'
+import RegisterForm from './RegisterForm'
 
 export default {
     name: 'LoginCard',
@@ -116,18 +90,12 @@ export default {
         return {
             loginEmail: '',
             loginPassword: '',
-            name: '',
-            surname: '',
-            secondSurname: '',
-            dni: '',
-            email: '',
-            password: '',
-            repeatPassword: '',
             isLoging: true
         }
     },
     components: {
-        LoginWithSocialMedia
+        LoginWithSocialMedia,
+        RegisterForm
     },
     methods: {
         changeView() {
