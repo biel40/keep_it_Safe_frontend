@@ -9,6 +9,7 @@ const routes = [
       { path: 'schedule', component: () => import('pages/Client/Schedule.vue') },
       { path: 'checkIn', component: () => import('pages/Employee/CheckingLugage.vue') },
       { path: 'createE', component: () => import('pages/Admin/CreateEmployee.vue') },
+      { path: 'price/edit', component: () => import('pages/Admin/EditPrices.vue') },
       
     ]
   }
