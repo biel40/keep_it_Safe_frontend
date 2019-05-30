@@ -1,24 +1,18 @@
 <template>
   <q-page padding class="row justify-center items-start">
-    <div class="  q-mt-md col-4 flex column">
-      <div class="flex no-wrap items-center justify-between q-mb-md">
-        <span class="text-h5 q-mr-md">Equipaje pequeño</span>
+    <div class="q-mt-md col-4 flex column">
+      <div
+        class="flex no-wrap items-center justify-between q-mb-md"
+        v-for="luggage in luggages"
+        :key="luggage.luggage_type"
+      >
+        <span class="text-h5 q-mr-md">Equipaje {{luggage.getFullName()}}</span>
         <div class="flex no-wrap items-center">
-          <q-input outlined class="price-luggage"/>
-          <span class="text-h5">€/dia</span>
-        </div>
-      </div>
-      <div class="flex no-wrap items-center justify-between q-mb-md">
-        <span class="text-h5 q-mr-md">Equipaje mediano</span>
-        <div class="flex no-wrap items-center">
-          <q-input outlined class="price-luggage"/>
-          <span class="text-h5">€/dia</span>
-        </div>
-      </div>
-      <div class="flex no-wrap items-center justify-between q-mb-lg">
-        <span class="text-h5 q-mr-md">Equipaje grande</span>
-        <div class="flex no-wrap items-center">
-          <q-input outlined class="price-luggage"/>
+          <q-input
+            outlined
+            class="price-luggage"
+            v-model="luggage.price"
+          />
           <span class="text-h5">€/dia</span>
         </div>
       </div>
@@ -28,42 +22,59 @@
 </template>
 
 <script>
-import Luggage from '../../class/Luggage';
+import Luggage from "../../class/Luggage";
 
 export default {
-  name: 'EditPrices',
-  data(){
-    return{
-      luggage: {
-        luggage_type: "",
-        deep_dimension: "",
-        high_dimension: "",
-        price: 0,
-        widht_dimension: "",
-      },
+  name: "EditPrices",
+  data() {
+    return {
       luggages: []
-    }
+    };
   },
   methods: {
-    saveChanges(){
+    saveChanges() {
       this.$axios
-        .get("http://localhost:8081/luggage")
+        .put("http://localhost:8081/luggages/price", this.luggages)
         .then(response => {
-          let hola = response.data[0]
-          let h = new Luggage(hola.luggage_type);
-          console.log(h);
-        })
-        .catch(error => {
-          console.log(error)
           this.$q.notify({
             message:
-              "Ha ocurrido un error al obtener el equipaje, intentelo de nuevo más tarde",
+              "Se han gardado los cambios correctamente",
+            color: "primary",
+            icon: "error",
+            timeout: 2000
+          });
+        })
+        .catch(error => {
+          this.$q.notify({
+            message:
+              "Ha ocurrido un error al intentar guardar los cambios, intentelo de nuevo más tarde",
             color: "red-10",
             icon: "error",
             timeout: 2000
           });
         });
     }
+  },
+  created() {
+    this.$axios
+      .get("http://localhost:8081/luggages")
+      .then(response => {
+        let luggages = response.data;
+        luggages.forEach(luggage => {
+          this.luggages.push(
+            new this.$classes.Luggage(
+              luggage.luggage_type,
+              luggage.deep_dimension,
+              luggage.high_dimension,
+              luggage.price,
+              luggage.width_dimension
+            )
+          );
+        });
+      })
+      .catch(error => {
+        console.log(error);
+      });
   }
 };
 </script>
