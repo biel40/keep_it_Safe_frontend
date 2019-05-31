@@ -28,9 +28,8 @@ export default {
   methods: {
     loginWithGoogle() {
       this.$axios
-        .post("http://localhost:8081/loginGoogle")
+        .post("http://localhost:8081/oAuth/google")
         .then(function(response) {
-          console.log(response.data);
           window.location.href = response.data;
         })
         .catch(function(error) {
@@ -41,7 +40,6 @@ export default {
         this.$axios
         .post("http://localhost:8081/loginFacebook")
         .then(function(response) {
-          console.log(response.data);
           window.location.href = response.data;
         })
         .catch(function(error) {

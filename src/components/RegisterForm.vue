@@ -17,26 +17,9 @@
       <span v-if="isUserView">Primer apellido *</span>
       <q-input
         outlined
-        v-model="user.first_surname"
-        class="input-register"
-        dense
-        :error="$v.user.first_surname.$error"
-        @blur="$v.user.first_surname.$touch"
-        error-message="no debe contener caracteres numéricos o especiales"
-        placeholder="obligatorio"
-        v-if="isUserView"
-      />
-    </div>
-    <div>
-      <span v-if="isUserView">Segundo apellido</span>
-      <q-input
-        outlined
-        v-model="user.second_surname"
-        class="input-register"
-        dense
-        :error="$v.user.second_surname.$error"
-        @blur="$v.user.second_surname.$touch"
-        error-message="no debe contener caracteres numéricos o especiales"
+        v-model="user.surnames"
+        class="input-register q-mb-md"
+        dense 
         v-if="isUserView"
       />
     </div>
@@ -102,15 +85,13 @@ import {
   email
 } from "vuelidate/lib/validators";
 
-
 export default {
   // name: 'ComponentName',
   data() {
     return {
       user: {
         name: "",
-        first_surname: "",
-        second_surname: "",
+        surnames: "",
         email: "",
         password: "",
         rol_user: ""
@@ -161,13 +142,6 @@ export default {
         user: {
           name: {
             required,
-            alpha
-          },
-          first_surname: {
-            required,
-            alpha
-          },
-          second_surname: {
             alpha
           },
           email: {
