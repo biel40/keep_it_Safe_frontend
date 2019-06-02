@@ -28,7 +28,7 @@ export default {
   methods: {
     loginWithGoogle() {
       this.$axios
-        .post("http://localhost:8081/oAuth/google")
+        .post("http://localhost:8081/oAuth/google")       
         .then(function(response) {
           window.location.href = response.data;
         })

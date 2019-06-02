@@ -9,7 +9,7 @@
           <div class="text-h5">Keep it Safe</div>
         </q-toolbar-title>
         <!-- Uncomment the following line and comment the another to change the functionality -->
-        <q-btn flat outline rounded icon="account_circle" :label="userName"  size="20px" class="q-mr-md" no-caps @click="loginDialog=true"/>
+        <q-btn flat outline rounded icon="account_circle" :label="user.name"  size="20px" class="q-mr-md" no-caps @click="loginDialog=true"/>
         <!-- <q-btn
           flat
           outline
@@ -62,17 +62,25 @@
     <q-page-container class="background-color-app">
       <router-view/>
     </q-page-container>
+
   </q-layout>
 </template>
 
 <script>
+
 import LoginCard from "../components/LoginCard";
 import MyAccountCard from "../components/MyAccountCard";
 import MyReservationList from "../components/MyReservationList";
+import { verify } from 'crypto';
 
 export default {
   data() {
     return {
+      user: {
+        "name" : "Accede",
+        "surnames" : "",
+        "rol" : "CLIENT"
+      },
       rol: 'U',
       userName: "Accede",
       loginDialog: false,
@@ -83,7 +91,49 @@ export default {
   methods: {
     logout() {
       console.log("Log out");
+    },
+    verifyTokenSignature(token) {
+      this.$axios.post("http://localhost:8081/token/verify", token)
+      .then((response) => {
+
+        // Recibiremos el JSON con la información deserializada.        
+        localStorage.setItem('user', response.data);
+
+        console.log(response.data);
+        console.log(response.data.name);
+        console.log(response.data.surnames);
+        console.log(response.data.rol);
+
+        // Mirar en el console log lo que devuelve el server y cambiar esto en función.
+        this.user.name = response.data.name;
+        this.user.surnames = response.data.surnames;
+        this.user.rol = response.data.rol;
+
+      }).catch((error) => {
+        // Con clear() quitamos todos los elementos del Local Storage
+        localStorage.clear();
+      });
+
+      console.log(token);
+
     }
+
+  },
+  mounted() {
+
+  },
+  created() {
+
+      var url_string = window.location.href
+      var url = new URL(url_string);
+
+      var tokenParam = url.searchParams.get("token");
+
+      console.log(tokenParam);
+
+      // Una vez obtenemos el Token hay que verificarlo.
+      this.verifyTokenSignature(tokenParam);
+
   },
   components: {
     LoginCard,

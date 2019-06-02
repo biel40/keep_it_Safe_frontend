@@ -104,16 +104,19 @@ export default {
         doLogin() {
           // Hacemos un POST con el email y la contraseña del usuario que quiere loguearse
           this.$axios
-          .post("http://localhost:8081/localLogin", {
+          .post("http://localhost:8081/login/local", {
               email: this.loginEmail,
               password: this.loginPassword
           })
           .then(function(response) {
-            // Si la respuesta es un 401, significa que se ha equivocado en el Login
-            if (response.status == 401) {
-              console.log("Sorry, credentials were wrong, please try again.");
-            }
+
+            // Obtenemos el Token en caso de que sea válido
             console.log(response.data);
+            let token = response.data;
+
+            // Lo guardamos en el LocalStorage
+            localStorage.setItem('token', token);
+            
           })
           .catch(function(error) {
             console.log(error);
