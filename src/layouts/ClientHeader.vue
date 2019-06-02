@@ -9,7 +9,10 @@
           <div class="text-h5">Keep it Safe</div>
         </q-toolbar-title>
         <!-- Uncomment the following line and comment the another to change the functionality -->
-        <q-btn flat outline rounded icon="account_circle" :label="user.name"  size="20px" class="q-mr-md" no-caps @click="loginDialog=true"/>
+        <img v-if="user.imageUrl == 'noImage'" src="https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg?sz=50" alt="icon" style="border-radius: 50%; ">
+        <img v-else :src="user.imageUrl" alt="icon" style="border-radius: 50%; ">
+
+        <q-btn flat outline rounded :label="user.name"  size="20px" class="q-mr-md" no-caps @click="loginDialog=true"/>
         <!-- <q-btn
           flat
           outline
@@ -77,9 +80,10 @@ export default {
   data() {
     return {
       user: {
-        "name" : "Accede",
+        "name" : "Accede!",
         "surnames" : "",
-        "rol" : "CLIENT"
+        "rol" : "CLIENT",
+        "imageUrl" : 'noImage'
       },
       rol: 'U',
       userName: "Accede",
@@ -99,15 +103,16 @@ export default {
         // Recibiremos el JSON con la información deserializada.        
         localStorage.setItem('user', response.data);
 
-        console.log(response.data);
         console.log(response.data.name);
         console.log(response.data.surnames);
-        console.log(response.data.rol);
+        console.log(response.data.role);
+        console.log(response.data.imageUrl);
 
         // Mirar en el console log lo que devuelve el server y cambiar esto en función.
         this.user.name = response.data.name;
         this.user.surnames = response.data.surnames;
-        this.user.rol = response.data.rol;
+        this.user.rol = response.data.role;
+        this.user.imageUrl = response.data.imageUrl;
 
       }).catch((error) => {
         // Con clear() quitamos todos los elementos del Local Storage
