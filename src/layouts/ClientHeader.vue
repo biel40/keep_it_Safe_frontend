@@ -9,20 +9,31 @@
           <div class="text-h5">Keep it Safe</div>
         </q-toolbar-title>
         <!-- Uncomment the following line and comment the another to change the functionality -->
-        <img v-if="user.imageUrl == 'noImage'" src="https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg?sz=50" alt="icon" style="border-radius: 50%; ">
-        <img v-else :src="user.imageUrl" alt="icon" style="border-radius: 50%; ">
-
-        <q-btn flat outline rounded :label="user.name"  size="20px" class="q-mr-md" no-caps @click="loginDialog=true"/>
-        <!-- <q-btn
-          flat
-          outline
+        <q-item
+          v-if="user.imageUrl == 'noImage'"
+          clickable
           rounded
-          icon="account_circle"
-          :label="userName"
-          size="20px"
-          class="q-mr-md"
-          no-caps
+          style="border-radius: 50px;"
+          class="justify-between items-center q-pa-xs q-mr-md"
+          @click="loginDialog=true"
         >
+          <q-icon name="account_circle" size="3em"/>
+          <span class="text-h6 q-mr-xs">{{user.name}}</span>
+        </q-item>
+
+        <q-item
+          v-else
+          clickable
+          rounded
+          style="border-radius: 50px;"
+          class="justify-between items-center q-pa-xs q-mr-md"
+        >
+          <img
+            :src="user.imageUrl"
+            alt="icon.avatar"
+            style="border-radius: 50px; width: 40%; height: 40%;"
+          >
+          <span class="text-h6">{{user.name}}</span>
           <q-menu>
             <q-list style="min-width: 100px">
               <q-item clickable v-close-popup @click="miAccountDialog=true">
@@ -37,16 +48,58 @@
               </q-item>
             </q-list>
           </q-menu>
-        </q-btn> -->
+        </q-item>
       </q-toolbar>
 
-      <q-tabs align="left" inline-label indicator-color="black">
+      <q-tabs v-if="user.rol === 'CLIENT'" align="left" inline-label indicator-color="black">
         <q-route-tab icon="mdi-currency-eur" to="/price" label="Precios" active-class="text-black"/>
         <q-route-tab icon="mdi-calendar" to="/schedule" label="Horario" active-class="text-black"/>
         <q-route-tab
           icon="mdi-briefcase-check"
           to="/reservation"
           label="Reserva"
+          active-class="text-black"
+        />
+      </q-tabs>
+
+      <q-tabs v-if="user.rol === 'EMPLOYEE'" align="left" inline-label indicator-color="black">
+        <q-route-tab
+          icon="mdi-briefcase-check"
+          to="/employee/invoice/check-in"
+          label="Facturar equipaje"
+          active-class="text-black"
+        />
+        <q-route-tab
+          icon="mdi-checkbox-multiple-marked-outline"
+          to="/employee/invoice/validate"
+          label="Validar factura"
+          active-class="text-black"
+        />
+        <q-route-tab
+          icon="mdi-file-document-edit"
+          to="/employee/invoice/edit"
+          label="Modificar factura"
+          active-class="text-black"
+        />
+      </q-tabs>
+
+      <q-tabs v-if="user.rol === 'ADMIN'" align="left" inline-label indicator-color="black">
+        <q-route-tab
+          icon="mdi-file-document-edit"
+          to="/admin/price/edit"
+          label="Modificar tarifa"
+          active-class="text-black"
+        />
+        <q-route-tab 
+          icon="mdi-account-plus" 
+          to="/admin/user/create" 
+          label="Crear empleado" 
+          active-class="text-black"
+        />
+        <q-route-tab
+          icon="mdi-currency-eur"
+          to="/admin/invoice/edit"
+          label="Modificar factura"
           active-class="text-black"
         />
       </q-tabs>
@@ -65,28 +118,29 @@
     <q-page-container class="background-color-app">
       <router-view/>
     </q-page-container>
-
   </q-layout>
 </template>
 
 <script>
+window.onbeforeunload = function() {
+  localStorage.clear();
+  return;
+};
 
 import LoginCard from "../components/LoginCard";
 import MyAccountCard from "../components/MyAccountCard";
 import MyReservationList from "../components/MyReservationList";
-import { verify } from 'crypto';
+import { verify } from "crypto";
 
 export default {
   data() {
     return {
       user: {
-        "name" : "Accede!",
-        "surnames" : "",
-        "rol" : "CLIENT",
-        "imageUrl" : 'noImage'
+        name: "Accede!",
+        surnames: "",
+        rol: "CLIENT",
+        imageUrl: "noImage"
       },
-      rol: 'U',
-      userName: "Accede",
       loginDialog: false,
       miAccountDialog: false,
       myReservationsDialog: false
@@ -97,48 +151,53 @@ export default {
       console.log("Log out");
     },
     verifyTokenSignature(token) {
-      this.$axios.post("http://localhost:8081/token/verify", token)
-      .then((response) => {
+      this.$axios
+        .post("http://localhost:8081/token/verify", token)
+        .then(response => {
+          localStorage.clear();
+          // Recibiremos el JSON con la información deserializada.
+          localStorage.setItem("user", response.data);
+          localStorage.setItem("token", token);
 
-        // Recibiremos el JSON con la información deserializada.        
-        localStorage.setItem('user', response.data);
+          console.log(response.data.name);
+          console.log(response.data.surnames);
+          console.log(response.data.role);
+          console.log(response.data.imageUrl);
 
-        console.log(response.data.name);
-        console.log(response.data.surnames);
-        console.log(response.data.role);
-        console.log(response.data.imageUrl);
-
-        // Mirar en el console log lo que devuelve el server y cambiar esto en función.
-        this.user.name = response.data.name;
-        this.user.surnames = response.data.surnames;
-        this.user.rol = response.data.role;
-        this.user.imageUrl = response.data.imageUrl;
-
-      }).catch((error) => {
-        // Con clear() quitamos todos los elementos del Local Storage
-        localStorage.clear();
-      });
+          // Mirar en el console log lo que devuelve el server y cambiar esto en función.
+          this.user.name = response.data.name;
+          this.user.surnames = response.data.surnames;
+          this.user.rol = response.data.role;
+          this.user.imageUrl = response.data.imageUrl;
+          if (user.rol==="CLIENT") {
+            console.log("wefbowef");
+            this.$router.push("/price");
+          } else{
+            console.log("buenos dias")
+            this.$router.push("/price");
+          }
+        })
+        .catch(error => {
+          // Con clear() quitamos todos los elementos del Local Storage
+          localStorage.clear();
+        });
 
       console.log(token);
-
     }
-
   },
-  mounted() {
-
-  },
+  mounted() {},
   created() {
-
-      var url_string = window.location.href
-      var url = new URL(url_string);
-
-      var tokenParam = url.searchParams.get("token");
+   
+      let url_string = window.location.href;
+      let url = new URL(url_string);
+      let tokenParam = url.searchParams.get("token");
 
       console.log(tokenParam);
-
       // Una vez obtenemos el Token hay que verificarlo.
-      this.verifyTokenSignature(tokenParam);
-
+      if(tokenParam){
+        this.verifyTokenSignature(tokenParam)
+      };
+    
   },
   components: {
     LoginCard,

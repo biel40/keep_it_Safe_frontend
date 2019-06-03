@@ -108,7 +108,7 @@ export default {
               email: this.loginEmail,
               password: this.loginPassword
           })
-          .then(function(response) {
+          .then(response => {
 
             // Obtenemos el Token en caso de que sea válido
             console.log(response.data);
@@ -116,12 +116,11 @@ export default {
 
             // Lo guardamos en el LocalStorage
             localStorage.setItem('token', token);
-            
+            this.$router.push("/?token="+token);            
           })
           .catch(function(error) {
             console.log(error);
           });
-
         },
         doRegister() {
             // Falta implementar el registro de usuarios.
