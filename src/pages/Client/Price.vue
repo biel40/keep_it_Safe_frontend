@@ -42,7 +42,7 @@
 import ClientComments from "../../components/ClientComments.vue";
 import moment from "../../../node_modules/moment";
 export default {
-  name: "PageIndex",
+  name: "Price",
   components: {
     ClientComments
   }

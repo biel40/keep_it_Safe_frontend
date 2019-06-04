@@ -1,5 +1,4 @@
 <template>
-  <div>
     <q-card style="height: 70vh; width: 350px; max-width: 80vw;" ref="card"  class="background-color-app-light flex column no-wrap justify-between  "> 
       <q-item>
         <q-scroll-area   ref="scrollAreaComments" style="height: 55vh; width: 350px; max-width: 80vw;" :thumb-style="scrollStyle">
@@ -17,7 +16,6 @@
         <q-btn class="" round color="primary" icon="send" />
       </div>
     </q-card>
-  </div>
 </template>
 
 <script>

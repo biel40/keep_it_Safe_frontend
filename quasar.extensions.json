@@ -1,0 +1,19 @@
+{
+  "@quasar/icon-factory": {
+    "minify_dev": "pngquant",
+    "minify_build": "pngquant",
+    "cordova": {
+      "background_color": "#000074",
+      "splashscreen_type": "overlay"
+    },
+    "build_always": true,
+    "__internal": {
+      "dev": {
+        "spa": {
+          "iconHash": "3486672d7776ba5e608685a119893055"
+        }
+      },
+      "build": {}
+    }
+  }
+}

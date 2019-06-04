@@ -9,17 +9,31 @@
           <div class="text-h5">Keep it Safe</div>
         </q-toolbar-title>
         <!-- Uncomment the following line and comment the another to change the functionality -->
-        <!--  <q-btn flat outline rounded icon="account_circle" :label="userName"  size="20px" class="q-mr-md" no-caps @click="loginDialog=true"/> -->
-        <q-btn
-          flat
-          outline
+        <q-item
+          v-if="user.imageUrl == 'noImage'"
+          clickable
           rounded
-          icon="account_circle"
-          :label="userName"
-          size="20px"
-          class="q-mr-md"
-          no-caps
+          style="border-radius: 50px;"
+          class="justify-between items-center q-pa-xs q-mr-md"
+          @click="loginDialog=true"
         >
+          <q-icon name="account_circle" size="3em"/>
+          <span class="text-h6 q-mr-xs">{{user.name}}</span>
+        </q-item>
+
+        <q-item
+          v-else
+          clickable
+          rounded
+          style="border-radius: 50px;"
+          class="justify-between items-center q-pa-xs q-mr-md"
+        >
+          <img
+            :src="user.imageUrl"
+            alt="icon.avatar"
+            style="border-radius: 50px; width: 40%; height: 40%;"
+          >
+          <span class="text-h6">{{user.name}}</span>
           <q-menu>
             <q-list style="min-width: 100px">
               <q-item clickable v-close-popup @click="miAccountDialog=true">
@@ -34,16 +48,58 @@
               </q-item>
             </q-list>
           </q-menu>
-        </q-btn>
+        </q-item>
       </q-toolbar>
 
-      <q-tabs align="left" inline-label indicator-color="black">
+      <q-tabs v-if="user.rol === 'CLIENT'" align="left" inline-label indicator-color="black">
         <q-route-tab icon="mdi-currency-eur" to="/price" label="Precios" active-class="text-black"/>
         <q-route-tab icon="mdi-calendar" to="/schedule" label="Horario" active-class="text-black"/>
         <q-route-tab
           icon="mdi-briefcase-check"
           to="/reservation"
           label="Reserva"
+          active-class="text-black"
+        />
+      </q-tabs>
+
+      <q-tabs v-if="user.rol === 'EMPLOYEE'" align="left" inline-label indicator-color="black">
+        <q-route-tab
+          icon="mdi-briefcase-check"
+          to="/employee/invoice/check-in"
+          label="Facturar equipaje"
+          active-class="text-black"
+        />
+        <q-route-tab
+          icon="mdi-checkbox-multiple-marked-outline"
+          to="/employee/invoice/validate"
+          label="Validar factura"
+          active-class="text-black"
+        />
+        <q-route-tab
+          icon="mdi-file-document-edit"
+          to="/employee/invoice/edit"
+          label="Modificar factura"
+          active-class="text-black"
+        />
+      </q-tabs>
+
+      <q-tabs v-if="user.rol === 'ADMIN'" align="left" inline-label indicator-color="black">
+        <q-route-tab
+          icon="mdi-file-document-edit"
+          to="/admin/price/edit"
+          label="Modificar tarifa"
+          active-class="text-black"
+        />
+        <q-route-tab 
+          icon="mdi-account-plus" 
+          to="/admin/user/create" 
+          label="Crear empleado" 
+          active-class="text-black"
+        />
+        <q-route-tab
+          icon="mdi-currency-eur"
+          to="/admin/invoice/edit"
+          label="Modificar factura"
           active-class="text-black"
         />
       </q-tabs>
@@ -69,10 +125,17 @@
 import LoginCard from "../components/LoginCard";
 import MyAccountCard from "../components/MyAccountCard";
 import MyReservationList from "../components/MyReservationList";
+import { verify } from "crypto";
+
 export default {
   data() {
     return {
-      userName: "Accede",
+      user: {
+        name: "Accede!",
+        surnames: "",
+        rol: "CLIENT",
+        imageUrl: "noImage"
+      },
       loginDialog: false,
       miAccountDialog: false,
       myReservationsDialog: false
@@ -81,7 +144,57 @@ export default {
   methods: {
     logout() {
       console.log("Log out");
+    },
+    verifyTokenSignature(token) {
+      this.$axios
+        .post("http://localhost:8081/token/verify", token)
+        .then(response => {
+          localStorage.clear();
+          // Recibiremos el JSON con la información deserializada.
+          let user = JSON.parse(response.data[0]);
+          let token = response.data[1];
+          localStorage.setItem("user", user);
+          localStorage.setItem("token", token);
+
+          console.log(user.name);
+          console.log(user.surnames);
+          console.log(user.role);
+          console.log(user.imageUrl);
+
+          // Mirar en el console log lo que devuelve el server y cambiar esto en función.
+          this.user.name = user.name;
+          this.user.surnames = user.surnames;
+          this.user.rol = user.role;
+          this.user.imageUrl = user.imageUrl;
+          if (this.user.rol=="CLIENT") {
+            console.log("wefbowef");
+            this.$router.push("/price");
+          } else{
+            console.log("buenos dias")
+            this.$router.push("/price");
+          }
+        })
+        .catch(error => {
+          // Con clear() quitamos todos los elementos del Local Storage
+          localStorage.clear();
+        });
+
+      console.log(token);
     }
+  },
+  created() {
+      if(localStorage.getItem("token")) {
+        console.log("tokem exist");
+        this.verifyTokenSignature(localStorage.getItem("token"));
+      } else {
+        let tokenParam = this.$route.query.token;
+
+        console.log(tokenParam);
+        // Una vez obtenemos el Token hay que verificarlo.
+        if(tokenParam){
+          this.verifyTokenSignature(tokenParam);
+        };
+      }
   },
   components: {
     LoginCard,

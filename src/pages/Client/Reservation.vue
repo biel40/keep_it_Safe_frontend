@@ -2,7 +2,7 @@
   <q-page class="flex row">
     <div class="col-12 col-md-8 row q-mt-md">
       <div class="column q-mb-md col-8 q-ml-xl">
-        <invoice-form/>
+        <invoice-form title="Reservar Equipaje"/>
       </div>
     </div>
 
