@@ -122,11 +122,6 @@
 </template>
 
 <script>
-window.onbeforeunload = function() {
-  localStorage.clear();
-  return;
-};
-
 import LoginCard from "../components/LoginCard";
 import MyAccountCard from "../components/MyAccountCard";
 import MyReservationList from "../components/MyReservationList";
@@ -156,20 +151,22 @@ export default {
         .then(response => {
           localStorage.clear();
           // Recibiremos el JSON con la información deserializada.
-          localStorage.setItem("user", response.data);
+          let user = JSON.parse(response.data[0]);
+          let token = response.data[1];
+          localStorage.setItem("user", user);
           localStorage.setItem("token", token);
 
-          console.log(response.data.name);
-          console.log(response.data.surnames);
-          console.log(response.data.role);
-          console.log(response.data.imageUrl);
+          console.log(user.name);
+          console.log(user.surnames);
+          console.log(user.role);
+          console.log(user.imageUrl);
 
           // Mirar en el console log lo que devuelve el server y cambiar esto en función.
-          this.user.name = response.data.name;
-          this.user.surnames = response.data.surnames;
-          this.user.rol = response.data.role;
-          this.user.imageUrl = response.data.imageUrl;
-          if (user.rol==="CLIENT") {
+          this.user.name = user.name;
+          this.user.surnames = user.surnames;
+          this.user.rol = user.role;
+          this.user.imageUrl = user.imageUrl;
+          if (this.user.rol=="CLIENT") {
             console.log("wefbowef");
             this.$router.push("/price");
           } else{
@@ -185,19 +182,19 @@ export default {
       console.log(token);
     }
   },
-  mounted() {},
   created() {
-   
-      let url_string = window.location.href;
-      let url = new URL(url_string);
-      let tokenParam = url.searchParams.get("token");
+      if(localStorage.getItem("token")) {
+        console.log("tokem exist");
+        this.verifyTokenSignature(localStorage.getItem("token"));
+      } else {
+        let tokenParam = this.$route.query.token;
 
-      console.log(tokenParam);
-      // Una vez obtenemos el Token hay que verificarlo.
-      if(tokenParam){
-        this.verifyTokenSignature(tokenParam)
-      };
-    
+        console.log(tokenParam);
+        // Una vez obtenemos el Token hay que verificarlo.
+        if(tokenParam){
+          this.verifyTokenSignature(tokenParam);
+        };
+      }
   },
   components: {
     LoginCard,
