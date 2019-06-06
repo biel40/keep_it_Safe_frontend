@@ -17,7 +17,10 @@
           class="justify-between items-center q-pa-xs q-mr-md"
           @click="loginDialog=true"
         >
-          <q-icon name="account_circle" size="3em"/>
+          <q-avatar class="q-mr-md">
+              <img src="./../assets/login-icon.png" alt="icon.image">
+          </q-avatar>
+
           <span class="text-h6 q-mr-xs">{{user.name}}</span>
         </q-item>
 
@@ -28,11 +31,16 @@
           style="border-radius: 50px;"
           class="justify-between items-center q-pa-xs q-mr-md"
         >
-          <img
+          <q-avatar class="q-mr-md" v-if="user.imageUrl !== null">
+            <img
             :src="user.imageUrl"
             alt="icon.avatar"
-            style="border-radius: 50px; width: 40%; height: 40%;"
           >
+          </q-avatar>
+            <q-avatar v-else class="q-mr-md">
+              <img src="./../assets/login-icon.png" alt="icon.image">
+          </q-avatar>
+          
           <span class="text-h6">{{user.name}}</span>
           <q-menu>
             <q-list style="min-width: 100px">
