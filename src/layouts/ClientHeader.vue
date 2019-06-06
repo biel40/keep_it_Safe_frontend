@@ -10,7 +10,7 @@
         </q-toolbar-title>
         <!-- Uncomment the following line and comment the another to change the functionality -->
         <q-item
-          v-if="user.imageUrl == 'noImage'"
+          v-if="user.isLoginUser == false"
           clickable
           rounded
           style="border-radius: 50px;"
@@ -55,7 +55,7 @@
         <q-route-tab icon="mdi-currency-eur" to="/price" label="Precios" active-class="text-black"/>
         <q-route-tab icon="mdi-calendar" to="/schedule" label="Horario" active-class="text-black"/>
         <q-route-tab
-          v-if="isLogin"
+          v-if="user.isLoginUser"
           icon="mdi-briefcase-check"
           to="/reservation"
           label="Reserva"
@@ -107,7 +107,7 @@
     </q-header>
 
     <q-dialog v-model="loginDialog" transition-show="slide-down">
-      <LoginCard v-bind:user="user" />
+      <LoginCard :user="user" />
     </q-dialog>
     <q-dialog v-model="miAccountDialog" transition-show="slide-down">
       <MyAccountCard user="Object with user"/>
@@ -136,9 +136,10 @@ export default {
         name: "Accede!",
         surnames: "",
         rol: "CLIENT",
-        imageUrl: "noImage"
+        imageUrl: null,
+        isLoginUser: false
       },
-      isLogin: false,
+
       loginDialog: false,
       miAccountDialog: false,
       myReservationsDialog: false
@@ -160,7 +161,8 @@ export default {
       this.user.name = "Accede!";
       this.user.surnames = "";
       this.user.rol = "CLIENT";
-      this.user.imageUrl = "noImage"
+      this.user.imageUrl = null;
+      this.user.isLoginUser = false;
       
     },
     verifyTokenSignature(token) {
@@ -184,7 +186,8 @@ export default {
           this.user.surnames = user.surnames;
           this.user.rol = user.role;
           this.user.imageUrl = user.imageUrl;
-          this.isLogin = true;
+          this.user.isLoginUser = true;
+          
           if (this.user.rol=="CLIENT") {
             console.log("wefbowef");
             this.$router.push("/price");
@@ -203,12 +206,12 @@ export default {
   },
   created() {
       if(localStorage.getItem("token")) {
-        console.log("tokem exist");
         this.verifyTokenSignature(localStorage.getItem("token"));
       } else {
         let tokenParam = this.$route.query.token;
 
         console.log("the token param",tokenParam);
+
         // Una vez obtenemos el Token hay que verificarlo.
         if(tokenParam){
           this.verifyTokenSignature(tokenParam);
