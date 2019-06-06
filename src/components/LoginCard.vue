@@ -86,6 +86,7 @@ import RegisterForm from './RegisterForm'
 
 export default {
     name: 'LoginCard',
+    props: ['user'],
     data() {
         return {
             loginEmail: '',
@@ -102,28 +103,28 @@ export default {
             this.isLoging = !this.isLoging
         },
         doLogin() {
-          // Hacemos un POST con el email y la contraseña del usuario que quiere loguearse
+          // Hacemos un POST con el email y la contraseña del usuario que quiere loguearse localmente
           this.$axios
           .post("http://localhost:8081/login/local", {
               email: this.loginEmail,
               password: this.loginPassword
           })
           .then(response => {
-
-            // Obtenemos el Token en caso de que sea válido
             console.log(response.data);
             let token = response.data;
 
+            this.verifyToken(token);
+
             // Lo guardamos en el LocalStorage
             localStorage.setItem('token', token);
-            this.$router.push("/?token="+token);            
+            
+            this.$router.push("/?token=" + token);            
           })
           .catch(function(error) {
             console.log(error);
           });
         },
         doRegister() {
-            // Falta implementar el registro de usuarios.
             this.$axios.post("http://localhost:8081/user")
             .then(function(response) {
               console.log(response.data);        
@@ -131,9 +132,42 @@ export default {
             .catch(function(error) {
               console.log(error);
             });
+        },
+        verifyToken (token) {  
+          this.$axios
+            .post("http://localhost:8081/token/verify", token)
+            .then(response => {
+
+              localStorage.clear();
+
+              // Recibiremos el JSON con la información deserializada.
+              let user = JSON.parse(response.data[0]);
+              let token = response.data[1];
+
+              localStorage.setItem("user", user);
+              localStorage.setItem("token", token);
+
+
+              this.user.name = user.name;
+              this.user.surnames = user.surnames;
+              this.user.rol = user.role;
+              this.user.imageUrl = "noImage";
+
+              if (this.user.rol == "CLIENT") {
+                this.$router.push("/price");
+              } else {
+                this.$router.push("/price");
+              }
+
+            })
+            .catch(error => {
+              localStorage.clear();
+            });
         }
     }
+
 }
+
 </script>
 
 <style>

@@ -106,7 +106,7 @@
     </q-header>
 
     <q-dialog v-model="loginDialog" transition-show="slide-down">
-      <LoginCard/>
+      <LoginCard v-bind:user="user" />
     </q-dialog>
     <q-dialog v-model="miAccountDialog" transition-show="slide-down">
       <MyAccountCard user="Object with user"/>
@@ -130,6 +130,7 @@ import { verify } from "crypto";
 export default {
   data() {
     return {
+
       user: {
         name: "Accede!",
         surnames: "",
@@ -144,6 +145,7 @@ export default {
   methods: {
     logout() {
       console.log("Log out");
+      localStorage.clear();
     },
     verifyTokenSignature(token) {
       this.$axios
@@ -153,6 +155,7 @@ export default {
           // Recibiremos el JSON con la información deserializada.
           let user = JSON.parse(response.data[0]);
           let token = response.data[1];
+          
           localStorage.setItem("user", user);
           localStorage.setItem("token", token);
 
@@ -161,11 +164,11 @@ export default {
           console.log(user.role);
           console.log(user.imageUrl);
 
-          // Mirar en el console log lo que devuelve el server y cambiar esto en función.
           this.user.name = user.name;
           this.user.surnames = user.surnames;
           this.user.rol = user.role;
           this.user.imageUrl = user.imageUrl;
+
           if (this.user.rol=="CLIENT") {
             console.log("wefbowef");
             this.$router.push("/price");
@@ -190,6 +193,7 @@ export default {
         let tokenParam = this.$route.query.token;
 
         console.log(tokenParam);
+
         // Una vez obtenemos el Token hay que verificarlo.
         if(tokenParam){
           this.verifyTokenSignature(tokenParam);
