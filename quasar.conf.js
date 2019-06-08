@@ -56,7 +56,8 @@ module.exports = function (ctx) {
         'QDate',
         'QPopupProxy',
         'QSelect',
-        'QTime'
+        'QTime',
+        'QSlideTransition'
       ],
 
       directives: [
