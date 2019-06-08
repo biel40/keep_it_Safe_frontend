@@ -8,7 +8,6 @@
           </q-avatar>
           <div class="text-h5">Keep it Safe</div>
         </q-toolbar-title>
-        <!-- Uncomment the following line and comment the another to change the functionality -->
         <q-item
           v-if="user.isLoginUser == false"
           clickable
@@ -18,7 +17,7 @@
           @click="loginDialog=true"
         >
           <q-avatar class="q-mr-md">
-              <img src="./../assets/login-icon.png" alt="icon.image">
+            <img src="./../assets/login-icon.png" alt="icon.image">
           </q-avatar>
 
           <span class="text-h6 q-mr-xs">{{user.name}}</span>
@@ -31,16 +30,13 @@
           style="border-radius: 50px;"
           class="justify-between items-center q-pa-xs q-mr-md"
         >
-          <q-avatar class="q-mr-md" v-if="user.imageUrl !== null">
-            <img
-            :src="user.imageUrl"
-            alt="icon.avatar"
-          >
+          <q-avatar class="q-mr-md" v-if="user.imageUrl">
+            <img :src="user.imageUrl" alt="icon.avatar">
           </q-avatar>
-            <q-avatar v-else class="q-mr-md">
-              <img src="./../assets/login-icon.png" alt="icon.image">
+          <q-avatar v-else class="q-mr-md">
+            <img src="./../assets/login-icon.png" alt="icon.image">
           </q-avatar>
-          
+
           <span class="text-h6">{{user.name}}</span>
           <q-menu>
             <q-list style="min-width: 100px">
@@ -99,10 +95,10 @@
           label="Modificar tarifa"
           active-class="text-black"
         />
-        <q-route-tab 
-          icon="mdi-account-plus" 
-          to="/admin/user/create" 
-          label="Crear empleado" 
+        <q-route-tab
+          icon="mdi-account-plus"
+          to="/admin/user/create"
+          label="Crear empleado"
           active-class="text-black"
         />
         <q-route-tab
@@ -115,7 +111,7 @@
     </q-header>
 
     <q-dialog v-model="loginDialog" transition-show="slide-down">
-      <LoginCard :user="user" />
+      <LoginCard :user="user"/>
     </q-dialog>
     <q-dialog v-model="miAccountDialog" transition-show="slide-down">
       <MyAccountCard user="Object with user"/>
@@ -139,7 +135,6 @@ import { verify } from "crypto";
 export default {
   data() {
     return {
-
       user: {
         name: "Accede!",
         surnames: "",
@@ -158,73 +153,37 @@ export default {
       let token = localStorage.getItem("token");
       this.$axios
         .post("http://localhost:8081/logOut", token)
-        .then(response => {
-        })
+        .then(response => {})
         .catch(error => {
           localStorage.clear();
         });
 
       localStorage.clear();
-      
+
       this.user.name = "Accede!";
       this.user.surnames = "";
       this.user.rol = "CLIENT";
       this.user.imageUrl = null;
       this.user.isLoginUser = false;
-      
-    },
-    verifyTokenSignature(token) {
-      this.$axios
-        .post("http://localhost:8081/token/verify", token)
-        .then(response => {
-          localStorage.clear();
-          // Recibiremos el JSON con la información deserializada.
-          let user = JSON.parse(response.data[0]);
-          let token = response.data[1];
-          
-          localStorage.setItem("user", user);
-          localStorage.setItem("token", token);
 
-          console.log(user.name);
-          console.log(user.surnames);
-          console.log(user.role);
-          console.log(user.imageUrl);
-
-          this.user.name = user.name;
-          this.user.surnames = user.surnames;
-          this.user.rol = user.role;
-          this.user.imageUrl = user.imageUrl;
-          this.user.isLoginUser = true;
-          
-          if (this.user.rol=="CLIENT") {
-            console.log("wefbowef");
-            this.$router.push("/price");
-          } else{
-            console.log("buenos dias")
-            this.$router.push("/price");
-          }
-        })
-        .catch(error => {
-          // Con clear() quitamos todos los elementos del Local Storage
-          localStorage.clear();
-        });
-
-      console.log(token);
+      this.$router.push("/price");
     }
   },
   created() {
-      if(localStorage.getItem("token")) {
-        this.verifyTokenSignature(localStorage.getItem("token"));
-      } else {
-        let tokenParam = this.$route.query.token;
+    if (localStorage.getItem("token")) {
+      console.log("localStorage", localStorage.getItem("token"));
+      this.$classes.Utils.verifyTokenSignature(
+        localStorage.getItem("token"),
+        this.user
+      );
+    } else {
+      let tokenParam = this.$route.query.token;
 
-        console.log("the token param",tokenParam);
-
-        // Una vez obtenemos el Token hay que verificarlo.
-        if(tokenParam){
-          this.verifyTokenSignature(tokenParam);
-        };
+      // Una vez obtenemos el Token hay que verificarlo.
+      if (tokenParam) {
+        this.$classes.Utils.verifyTokenSignature(tokenParam, this.user);
       }
+    }
   },
   components: {
     LoginCard,

@@ -1,5 +1,7 @@
+import axios from 'axios'
+
 export default ({
-  Vue
+  Vue, router
 }) => {
   Vue.prototype.$classes = {
     Luggage: function (luggage_type, deep_dimension, high_dimension, price, width_dimension) {
@@ -19,6 +21,41 @@ export default ({
           default:
             return "error"
         }
+      }
+    },
+    Utils: {
+      verifyTokenSignature: function (token, user) {
+        axios
+          .post("http://localhost:8081/token/verify", token)
+          .then(response => {
+            localStorage.clear();
+            // Recibiremos el JSON con la información deserializada.
+            console.log("the user", user);
+            let userToken = JSON.parse(response.data[0]);
+            let token = response.data[1];
+  
+            user.name = userToken.name;
+            user.surnames = userToken.surnames;
+            user.rol = userToken.rol;
+            user.imageUrl = userToken.imageUrl;
+            user.isLoginUser = true;
+
+            localStorage.setItem("user", user);
+            localStorage.setItem("token", token);
+
+            if(user.rol === "CLIENT"){
+              router.push('/price');
+            } else if (user.rol === "EMPLOYEE"){
+              router.push('/employee/invoice/check-in');
+            }else if (user.rol === "ADMIN"){
+              router.push('/admin/price/edit');
+            }
+          })
+          .catch(error => {
+            // Con clear() quitamos todos los elementos del Local Storage
+            console.log(error);
+            localStorage.clear();
+          });
       }
     }
   }
