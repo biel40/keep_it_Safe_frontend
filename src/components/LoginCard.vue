@@ -1,9 +1,9 @@
 <template>
 <div style="width: 800px; max-width:  90vw;">
-  <q-card class="bg-grey-12" v-if="isLoging">
+  <q-card class="bg-grey-12" v-if="isLoginView" @close="showModal">
     <q-card-section class="col-12 bg-grey-4 q-pb-md">
         <div class="col-12 flex justify-end">
-            <q-btn size="10px" icon="close" flat round dense v-close-popup />
+            <q-btn ref="boton" size="10px" icon="close" flat round dense v-close-popup />
         </div>
         <div class="text-h5 text-center text-grey-9">¡Bien venido a Keep it Safe!</div>
         <div class="text-subtitle2 text-center text-grey-9">Regístrate y podrás reservar equipaje gratuitamente</div>
@@ -53,8 +53,9 @@
     <q-separator class="col-12" />
     <q-card-section class="col-12 row flex justify-center">
       <div class="flex column no-wrap col-12 col-md text-h6">
+
         <q-item>
-          <register-form buttonName="Registrate" isUserView/>
+          <register-form buttonName="Registrate" isUserView />
         </q-item>
 
         <q-item clickable class="flex items-center justify-center q-mt-lg item-border-radius-40 q-pd-xs col" @click="changeView">
@@ -86,11 +87,13 @@ import RegisterForm from './RegisterForm'
 
 export default {
     name: 'LoginCard',
+    props:  ['user'],
     data() {
         return {
             loginEmail: '',
             loginPassword: '',
-            isLoging: true
+            isLoginView: true,
+            showModal: true
         }
     },
     components: {
@@ -99,31 +102,30 @@ export default {
     },
     methods: {
         changeView() {
-            this.isLoging = !this.isLoging
+            this.isLoginView = !this.isLoginView
         },
         doLogin() {
-          // Hacemos un POST con el email y la contraseña del usuario que quiere loguearse
+          // Hacemos un POST con el email y la contraseña del usuario que quiere loguearse localmente
           this.$axios
           .post("http://localhost:8081/login/local", {
               email: this.loginEmail,
               password: this.loginPassword
           })
           .then(response => {
-
-            // Obtenemos el Token en caso de que sea válido
             console.log(response.data);
             let token = response.data;
 
-            // Lo guardamos en el LocalStorage
-            localStorage.setItem('token', token);
-            this.$router.push("/?token="+token);            
+            this.verifyToken(token);
+            
+            // Cerrar el modal
+            this.$refs.boton.$el.click();
+                      
           })
           .catch(function(error) {
             console.log(error);
           });
         },
         doRegister() {
-            // Falta implementar el registro de usuarios.
             this.$axios.post("http://localhost:8081/user")
             .then(function(response) {
               console.log(response.data);        
@@ -131,9 +133,36 @@ export default {
             .catch(function(error) {
               console.log(error);
             });
+        },
+        verifyToken(token) {  
+          this.$axios
+            .post("http://localhost:8081/token/verify", token)
+            .then(response => {
+
+              localStorage.clear();
+
+              // Recibiremos el JSON con la información deserializada.
+              let user = JSON.parse(response.data[0]);
+              let token = response.data[1];
+
+              localStorage.setItem("user", user);
+              localStorage.setItem("token", token);
+
+              this.user.name = user.name;
+              this.user.surnames = user.surnames;
+              this.user.rol = user.rol;
+              this.user.isLoginUser = true;
+
+            })
+            .catch(error => {
+              localStorage.clear();
+            });
         }
+
     }
+
 }
+
 </script>
 
 <style>

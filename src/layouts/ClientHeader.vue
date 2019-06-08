@@ -10,7 +10,7 @@
         </q-toolbar-title>
         <!-- Uncomment the following line and comment the another to change the functionality -->
         <q-item
-          v-if="user.imageUrl == 'noImage'"
+          v-if="user.isLoginUser == false"
           clickable
           rounded
           style="border-radius: 50px;"
@@ -63,7 +63,7 @@
         <q-route-tab icon="mdi-currency-eur" to="/price" label="Precios" active-class="text-black"/>
         <q-route-tab icon="mdi-calendar" to="/schedule" label="Horario" active-class="text-black"/>
         <q-route-tab
-          v-if="isLogin"
+          v-if="user.isLoginUser"
           icon="mdi-briefcase-check"
           to="/reservation"
           label="Reserva"
@@ -115,7 +115,7 @@
     </q-header>
 
     <q-dialog v-model="loginDialog" transition-show="slide-down">
-      <LoginCard/>
+      <LoginCard :user="user" />
     </q-dialog>
     <q-dialog v-model="miAccountDialog" transition-show="slide-down">
       <MyAccountCard user="Object with user"/>
@@ -139,13 +139,15 @@ import { verify } from "crypto";
 export default {
   data() {
     return {
+
       user: {
         name: "Accede!",
         surnames: "",
         rol: "CLIENT",
-        imageUrl: "noImage"
+        imageUrl: null,
+        isLoginUser: false
       },
-      isLogin: false,
+
       loginDialog: false,
       miAccountDialog: false,
       myReservationsDialog: false
@@ -154,13 +156,11 @@ export default {
   methods: {
     logout() {
       let token = localStorage.getItem("token");
-      console.log("PUTO TOKEN ", token);
       this.$axios
         .post("http://localhost:8081/logOut", token)
         .then(response => {
         })
         .catch(error => {
-          // Con clear() quitamos todos los elementos del Local Storage
           localStorage.clear();
         });
 
@@ -169,7 +169,8 @@ export default {
       this.user.name = "Accede!";
       this.user.surnames = "";
       this.user.rol = "CLIENT";
-      this.user.imageUrl = "noImage"
+      this.user.imageUrl = null;
+      this.user.isLoginUser = false;
       
     },
     verifyTokenSignature(token) {
@@ -180,6 +181,7 @@ export default {
           // Recibiremos el JSON con la información deserializada.
           let user = JSON.parse(response.data[0]);
           let token = response.data[1];
+          
           localStorage.setItem("user", user);
           localStorage.setItem("token", token);
 
@@ -188,12 +190,12 @@ export default {
           console.log(user.role);
           console.log(user.imageUrl);
 
-          // Mirar en el console log lo que devuelve el server y cambiar esto en función.
           this.user.name = user.name;
           this.user.surnames = user.surnames;
           this.user.rol = user.role;
           this.user.imageUrl = user.imageUrl;
-          this.isLogin = true;
+          this.user.isLoginUser = true;
+          
           if (this.user.rol=="CLIENT") {
             console.log("wefbowef");
             this.$router.push("/price");
@@ -212,12 +214,12 @@ export default {
   },
   created() {
       if(localStorage.getItem("token")) {
-        console.log("tokem exist");
         this.verifyTokenSignature(localStorage.getItem("token"));
       } else {
         let tokenParam = this.$route.query.token;
 
         console.log("the token param",tokenParam);
+
         // Una vez obtenemos el Token hay que verificarlo.
         if(tokenParam){
           this.verifyTokenSignature(tokenParam);
