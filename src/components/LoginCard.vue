@@ -128,14 +128,20 @@ export default {
         })
         .then(response => {
           let token = response.data;
-          
           this.$classes.Utils.verifyTokenSignature(token, this.user);
 
           // Cerrar el modal
           this.$refs.boton.$el.click();
         })
-        .catch(function(error) {
-          console.log(error);
+        .catch(error => {
+          this.$q.notify({
+            message:
+              "Usuario o contraseña incorrecta",
+            color: "red-10",
+            icon: "error",
+            position: "center",
+            timeout: 100
+          });
         });
     },
     doRegister() {

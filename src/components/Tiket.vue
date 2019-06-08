@@ -4,7 +4,7 @@
     <p class="text-primary text-h4 text-center q-mt-lg q-mb-md">Keep it Safe</p>
     <p class="text-weight-bolder text-h6 q-mt-xl text-center">
       Le atendío
-      <span class="text-weight-light">{{user}}</span>
+      <span class="text-weight-light">{{user.name}} {{user.surnames}}</span>
     </p>
     <div v-for="luggage in luggages" :key="luggage.type" class="text-h6 q-mt-xl">
       <div v-if="luggage.count > 0" class="flex no-wrp justify-between">
@@ -16,8 +16,8 @@
       </div>
     </div>
     <div class="text-body1 q-mt-lg">
-      <p><span class="text-h6">Fecha de entrega: </span>{{date.initDate | getDateFormat}} a las {{date.initTime}}</p> 
-      <p><span class="text-h6">Fecha de recogida: </span>{{date.finishDate | getDateFormat}} a las {{date.finishTime}}</p> 
+      <p v-if="date"><span class="text-h6">Fecha de entrega: </span>{{date.initDate | getDateFormat}} a las {{date.initTime}}</p> 
+      <p v-if="date"><span class="text-h6">Fecha de recogida: </span>{{date.finishDate | getDateFormat}} a las {{date.finishTime}}</p> 
     </div>
     <p class="text-center text-h5 q-mt-lg"><span  class="text-h4">Total:</span> MUCHOS DINEROS</p>
   </q-card>
@@ -29,7 +29,6 @@ export default {
   name: "Tiket",
   data() {
     return {
-      data: ""
     };
   },
   filters: {

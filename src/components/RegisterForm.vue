@@ -9,18 +9,17 @@
         dense
         :error="$v.user.name.$error"
         @blur="$v.user.name.$touch"
-        error-message="no debe contener caracteres numéricos o especiales"
+        error-message="debes añadir un nombre"
         placeholder="obligatorio"
       />
     </div>
     <div>
-      <span v-if="isUserView">Primer apellido *</span>
+      <span >Primer apellido </span>
       <q-input
         outlined
         v-model="user.surnames"
         class="input-register q-mb-md"
         dense 
-        v-if="isUserView"
       />
     </div>
     <div>
@@ -105,7 +104,7 @@ export default {
       console.log(this.$v.$error);
       if (this.$v.$error) return;
       // Falta implementar el registro de usuarios.
-      if (this.isUserView) {
+      if (this.isClientView) {
         this.user.rol_user = "CLIENT";
       } else {
         this.user.rol_user = "EMPLOYEE";
@@ -136,13 +135,10 @@ export default {
     buttonName: String,
     isUserView: Boolean
   },
-  validations() {
-    if (this.isUserView) {
-      return {
+  validations:{
         user: {
           name: {
             required,
-            alpha
           },
           email: {
             required,
@@ -159,32 +155,7 @@ export default {
             return this.user.password;
           })
         }
-      };
-    } else {
-      return {
-        user: {
-          name: {
-            required,
-            alpha
-          },
-          email: {
-            required,
-            email
-          },
-          password: {
-            required,
-            minLength: minLength(8)
-          }
-        },
-        confirmPassword: {
-          required,
-          sameAs: sameAs(function() {
-            return this.user.password;
-          })
-        }
-      };
-    }
-  }
+      }
 };
 </script>
 

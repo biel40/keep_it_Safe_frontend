@@ -40,8 +40,8 @@ export default ({
             user.imageUrl = userToken.imageUrl;
             user.isLoginUser = true;
 
-            localStorage.setItem("user", user);
-            localStorage.setItem("token", token);
+            localStorage.setItem("user", JSON.stringify(user));
+            localStorage.setItem("token",  token);
 
             if(user.rol === "CLIENT"){
               router.push('/price');
