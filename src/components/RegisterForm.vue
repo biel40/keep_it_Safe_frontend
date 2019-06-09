@@ -103,6 +103,7 @@ export default {
       this.$v.$touch();
       console.log(this.$v.$error);
       if (this.$v.$error) return;
+      
       // Falta implementar el registro de usuarios.
       if (this.isClientView) {
         this.user.rol_user = "CLIENT";
