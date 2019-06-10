@@ -23,6 +23,12 @@ if (process.env.MODE !== 'ssr') {
   routes.push({
     path: '*',
     component: () => import('pages/Error404.vue')
+  }, {
+      path: '/error401',
+      component: () => import('pages/Error401.vue')
+  },{
+    path: '/error500',
+    component: () => import('pages/Error500.vue')
   })
 }
 

@@ -128,6 +128,7 @@ export default {
         })
         .then(response => {
           let token = response.data;
+
           this.$classes.Utils.verifyTokenSignature(token, this.user);
 
           // Cerrar el modal
@@ -140,7 +141,7 @@ export default {
             color: "red-10",
             icon: "error",
             position: "center",
-            timeout: 100
+            timeout: 2000
           });
         });
     },
@@ -151,7 +152,13 @@ export default {
           console.log(response.data);
         })
         .catch(function(error) {
+
           console.log(error);
+
+          if (error.response.status == 401)
+          this.$router.push('/error401');
+        
+
         });
     }
   }

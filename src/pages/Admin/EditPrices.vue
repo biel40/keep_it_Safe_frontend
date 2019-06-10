@@ -59,6 +59,7 @@ export default {
     this.$axios
       .get("http://localhost:8081/luggages")
       .then(response => {
+
         let luggages = response.data;
         luggages.forEach(luggage => {
           this.luggages.push(
@@ -72,8 +73,14 @@ export default {
           );
         });
       })
-      .catch(error => {
+      .catch(function(error) {
+
         console.log(error);
+
+        if (error == 401){
+          this.$router.push('/error401');
+        }         
+
       });
   }
 };

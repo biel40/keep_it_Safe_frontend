@@ -42,8 +42,10 @@ export default ({
           .post("http://localhost:8081/token/verify", token)
           .then(response => {
             localStorage.clear();
+
             // Recibiremos el JSON con la información deserializada.
-            console.log("the user", user);
+            console.log("User Logged: ", user);
+
             let userToken = JSON.parse(response.data[0]);
             let token = response.data[1];
   
@@ -54,7 +56,10 @@ export default ({
             user.isLoginUser = true;
 
             localStorage.setItem("user", JSON.stringify(user));
-            localStorage.setItem("token",  token);
+            localStorage.setItem('token', token);
+
+            console.log("Token added to local storage = " + token);
+            
 
             if(user.rol === "CLIENT"){
               router.push('/price');
@@ -64,9 +69,9 @@ export default ({
               router.push('/admin/price/edit');
             }
           })
-          .catch(error => {
-            // Con clear() quitamos todos los elementos del Local Storage
+          .catch(function (error) {
             console.log(error);
+
             localStorage.clear();
           });
       }
