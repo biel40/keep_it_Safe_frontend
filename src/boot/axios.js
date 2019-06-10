@@ -8,16 +8,17 @@ export default ({
   Vue,
   router
 }) => {
-  // Añadimos un interceptor para que añada el token a las Headers de cada peticion http al servidor.
+  // Añadimos un interceptor para que añada el token a las Headers de cada peticion HTTP al Servidor.
   axios.interceptors.request.use(function (configuration) {
 
     axios.defaults.withCredentials = true;
-
+    
     console.log(localStorage.getItem('token'));
 
     axios.defaults.headers.common['Authorization'] = localStorage.getItem('token');
 
     console.log("Added header Authorization to the Request");
+  
 
     return configuration;
 
