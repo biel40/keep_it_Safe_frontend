@@ -11,11 +11,17 @@ export default ({
   // Añadimos un interceptor para que añada el token a las Headers de cada peticion http al servidor.
   axios.interceptors.request.use(function (configuration) {
 
-    axios.defaults.withCredentials = true;
-
+    //axios.defaults.withCredentials = true;
+    console.log(configuration);
+    let token = localStorage.getItem('token');
     console.log(localStorage.getItem('token'));
-
-    axios.defaults.headers.common['Authorization'] = localStorage.getItem('token');
+    if(token){
+      //axios.defaults.headers.common['Authorization'] ="Bearer "+token;
+      configuration.headers.Authorization = `Bearer ${token}`;
+      configuration.headers.IsTheRequest = 'true';
+      console.log("CONFIGURATION HEADER --->>>>  " +configuration.headers.Authorization );
+    }
+   
 
     console.log("Added header Authorization to the Request");
 
