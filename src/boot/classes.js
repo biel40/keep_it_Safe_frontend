@@ -21,7 +21,20 @@ export default ({
           default:
             return "error"
         }
-      }
+      },
+      this.count = 0
+    },
+    Client : function(email, name, surnames){
+      this.email = email;
+      this.name = name
+      this.surnames = surnames
+    },
+    Invoice: function(end_date, start_date, total_price, user, luggages){
+      this.end_date = end_date;
+      this.start_date = start_date;
+      this.total_price = total_price;
+      this.user = user;
+      this.luggages;
     },
     Utils: {
       verifyTokenSignature: function (token, user) {

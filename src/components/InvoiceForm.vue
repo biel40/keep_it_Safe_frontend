@@ -4,21 +4,17 @@
     <div class="flex column no-wrap">
       <div class="col-12 flex row no-wrap justify-between">
         <div class="col-5">
-          <p class="formText">DNI</p>
-          <q-input class="q-mb-md" outlined v-model="Client.DNI" dense/>
-        </div>
-        <div class="col-5">
           <p class="formText">Nombre</p>
           <q-input class="q-mb-md" outlined v-model="Client.nombre" dense/>
+        </div>
+        <div class="col-5">
+          <p class="formText">Apellidos</p>
+          <q-input class="q-mb-md" outlined v-model="Client.primerApellido" dense/>
         </div>
       </div>
       <div class="col-12 flex row no-wrap justify-between">
         <div class="col-5">
-          <p class="formText">Primer Apellido</p>
-          <q-input class="q-mb-md" outlined v-model="Client.primerApellido" dense/>
-        </div>
-        <div class="col-5">
-          <p class="formText">Segundo Apellido</p>
+          <p class="formText">Correo electrónico</p>
           <q-input class="q-mb-md" outlined v-model="Client.segundoApellido" dense/>
         </div>
       </div>
@@ -26,13 +22,7 @@
     <div class="flex row row justify-between">
       <div class="flex column col-5">
         <p class="formText">Día de Reserva</p>
-        <q-input
-          outlined
-          v-model="InvoiceDate.initDate"
-          dense
-          label="Día"
-          class="q-mb-lg"
-        >
+        <q-input outlined v-model="InvoiceDate.initDate" dense label="Día" class="q-mb-lg">
           <template v-slot:append>
             <q-icon name="event" class="cursor-pointer">
               <q-popup-proxy ref="initDate">
@@ -79,7 +69,14 @@
           </template>
         </q-input>
 
-        <q-input outlined v-model="InvoiceDate.finishTime" mask="time" :rules="['time']" dense label="Hora">
+        <q-input
+          outlined
+          v-model="InvoiceDate.finishTime"
+          mask="time"
+          :rules="['time']"
+          dense
+          label="Hora"
+        >
           <template v-slot:append>
             <q-icon name="access_time" clatar xfzss="cursor-pointer">
               <q-popup-proxy ref="finishTime">
@@ -125,12 +122,13 @@
         </div>
       </q-item>
     </q-list>
-    <q-btn color="primary" label="GENERAR FACTURA"/>
+    <q-btn color="primary" label="GENERAR FACTURA" @click="createInvoice"/>
   </div>
 </template>
 
 <script>
 import moment from "../../node_modules/moment";
+import { constants } from 'fs';
 let Luggage = function(type, fullName) {
   this.type = type;
   this.count = 0;
@@ -154,11 +152,7 @@ export default {
         finishTime: "",
         finishDate: ""
       },
-      luggages: [
-        new Luggage("s", "pequeña"),
-        new Luggage("m", "mediana"),
-        new Luggage("g", "grande")
-      ],
+      luggages: [],
       message: "Unicamente se pueden añadir 5 matelas de este tipo como máximo"
     };
   },
@@ -199,14 +193,54 @@ export default {
     setAllowedDays(date) {
       return this.moment.format("YYYY/MM/DD") <= date;
     },
-    getDate(){
+    getDate() {
       return this.InvoiceDate;
     },
-    getLuggages(){
+    getLuggages() {
       return this.luggages;
+    },
+    createInvoice() {
+      let a = this.luggages[0];
+      let obj = {
+        deep_dimension: a.deep_dimension,
+        high_dimension: a.high_dimension,
+        luggage_type: a.luggage_type,
+        price: a.price,
+        width_dimension: a.width_dimension
+      };
+      console.log(a)
+      this.$axios
+        .post("http://localhost:8081/luggages", a)
+        .then(response => {
+          console.log(response);
+        })
+        .catch(error => {
+          console.log(error);
+        });
     }
   },
-  props: ['title']
+  created() {
+    this.$axios
+      .get("http://localhost:8081/luggages")
+      .then(response => {
+        let luggages = response.data;
+        luggages.forEach(luggage => {
+          this.luggages.push(
+            new this.$classes.Luggage(
+              luggage.luggage_type,
+              luggage.deep_dimension,
+              luggage.high_dimension,
+              luggage.price,
+              luggage.width_dimension
+            )
+          );
+        });
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  },
+  props: ["title"]
 };
 </script>
 
