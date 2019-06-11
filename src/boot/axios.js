@@ -1,9 +1,5 @@
 import axios from 'axios'
 
-import {
-  Notify
-} from 'quasar'
-
 export default ({
   Vue,
   router
@@ -12,19 +8,13 @@ export default ({
   axios.interceptors.request.use(function (configuration) {
 
     axios.defaults.withCredentials = true;
-  
+
     let token = localStorage.getItem('token');
-    console.log(localStorage.getItem('token'));
 
-    if(token) {
-      //axios.defaults.headers.common['Authorization'] ="Bearer " + token;
-
+    if (token) {
       configuration.headers.Authorization = `Bearer ${token}`;
       configuration.headers.IsTheRequest = 'true';
-
-      console.log("CONFIGURATION HEADER --->  " + configuration.headers.Authorization );
     }
-   
 
     console.log("Added header Authorization to the Request");
 
@@ -36,41 +26,24 @@ export default ({
   });
 
   // Response Interceptor
-  axios.interceptors.response.use(function(response) {
+  axios.interceptors.response.use(function (response) {
 
-    if (response && response.data && response.data.notifyMissatge) {
-      if (response.data.notifyTipus && response.data.notifyTipus == 'SUCCESS') {
-        Notify.create({
-          message: response.data.notifyMissatge,
-          type: 'positive'
-        })
-      } else if (response.data.notifyTipus && response.data.notifyTipus == 'WARNING') {
-        Notify.create({
-          message: response.data.notifyMissatge,
-          type: 'warning'
-        })
-      } else if (response.data.notifyTipus && response.data.notifyTipus == 'ERROR') {
-        Notify.create({
-          message: response.data.notifyMissatge,
-          type: 'negative'
-        })
-      } else {
-        Notify.create({
-          message: response.data.notifyMissatge,
-          type: 'info'
-        })
-      }
+    if (response && response.data && response.headers.token && response.headers.user) {
+      localStorage.clear();
+      localStorage.setItem("user", response.headers.user);
+      localStorage.setItem("token", response.headers.token);
     }
-
     return response;
 
   }, function (error) {
-    if (error && error.response  == 401) {
+
+    if (error.response.status === 401) {
+      //TODO variable isUserLogin not work
       console.log('Unauthorized response');
       localStorage.clear();
-
-      router.push('/Error401');
+      router.push('/price');
     }
+
   });
 
   Vue.prototype.$axios = axios
