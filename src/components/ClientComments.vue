@@ -1,7 +1,8 @@
 <template>
-    <q-card style="height: 70vh; width: 350px; max-width: 80vw;" ref="card"  class="background-color-app-light flex column no-wrap justify-between  "> 
+    <q-card style="height: 70vh; width: 400px; max-width: 90vw;" ref="card" class="background-color-app-light flex column no-wrap justify-between q-card-container q-mb-md"> 
       <q-item>
-        <q-scroll-area   ref="scrollAreaComments" style="height: 55vh; width: 350px; max-width: 80vw;" :thumb-style="scrollStyle">
+        <q-scroll-area ref="scrollAreaComments" style="height: 50vh; width: 350px; max-width: 70vw;" :thumb-style="scrollStyle">
+          <!-- TODO: Cambiar esto por la información de la tabla comments de MySQL. -->
           <div v-for="number in 10" :key="number" class="q-py-xs q-pa-md">
             Lorem ipsum dolor sit amet, consectetur adipisicing
             elit, sed do eiusmod tempor incididunt ut labore et
@@ -10,12 +11,15 @@
         </q-scroll-area>
       </q-item>
       
+      <q-item>
+        <q-item-section class="flex column items-center q-mt-md">
+            <q-input class="col-11" style="width: 300px;" rounded outlined v-model="model" label="Mensaje" />
+            <q-btn round color="primary" icon="send" />
+        </q-item-section>
+      </q-item>
 
-      <div class="flex row items-center q-mt-md">
-        <q-input class="q-ma-md col-9" rounded outlined v-model="model" label="Mensaje" />
-        <q-btn class="" round color="primary" icon="send" />
-      </div>
     </q-card>
+
 </template>
 
 <script>
