@@ -22,7 +22,6 @@
 </template>
 
 <script>
-import Luggage from "../../class/Luggage";
 
 export default {
   name: "EditPrices",

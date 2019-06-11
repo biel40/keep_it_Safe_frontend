@@ -13,15 +13,16 @@ export default ({
 
     axios.defaults.withCredentials = true;
   
-
     let token = localStorage.getItem('token');
     console.log(localStorage.getItem('token'));
 
     if(token) {
-      //axios.defaults.headers.common['Authorization'] ="Bearer "+token;
+      //axios.defaults.headers.common['Authorization'] ="Bearer " + token;
+
       configuration.headers.Authorization = `Bearer ${token}`;
       configuration.headers.IsTheRequest = 'true';
-      console.log("CONFIGURATION HEADER --->>>>  " +configuration.headers.Authorization );
+
+      console.log("CONFIGURATION HEADER --->  " + configuration.headers.Authorization );
     }
    
 
@@ -34,7 +35,7 @@ export default ({
     return Promise.reject(error);
   });
 
-  // Response interceptor
+  // Response Interceptor
   axios.interceptors.response.use(function(response) {
 
     if (response && response.data && response.data.notifyMissatge) {

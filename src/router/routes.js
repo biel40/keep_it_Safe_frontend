@@ -2,6 +2,7 @@
 const routes = [
   {
     path: '',
+    redirect: '/price',
     component: () => import('layouts/ClientHeader.vue'),
     children: [
       { path: 'price', component: () => import('pages/Client/Price.vue') },
