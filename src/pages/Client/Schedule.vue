@@ -10,11 +10,12 @@
           Podrás encontrarnos en la Calle Ficticia nº5
         </p>
 
-        <gmap-map
+        <gmap-map 
+          class="q-mb-xs"
           :center="{ lat: 39.500155, lng: 2.753312} "
           :zoom="16"
           map-type-id="terrain"
-          style="width: 600px; max-width:  90vw; height: 500px"
+          style="width: 600px; max-width: 90vw; height: 500px"
         >
           <gmap-marker
             :key="index"

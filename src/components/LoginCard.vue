@@ -1,5 +1,6 @@
 <template>
   <div style="width: 800px; max-width:  90vw;">
+
     <q-card class="bg-grey-12" v-if="isLoginView" @close="showModal">
       <q-card-section class="col-12 bg-grey-4 q-pb-md">
         <div class="col-12 flex justify-end">
@@ -8,9 +9,13 @@
         <div class="text-h5 text-center text-grey-9">¡Bien venido a Keep it Safe!</div>
         <div
           class="text-subtitle2 text-center text-grey-9"
-        >Regístrate y podrás reservar equipaje gratuitamente</div>
+        >Regístrate y podrás reservar equipaje gratuitamente
+        
+        </div>
+
       </q-card-section>
       <q-separator class="col-12"/>
+
       <q-card-section class="col-12 row flex justify-center">
         <div class="flex column no-wrap col-12 col-md text-h6">
           <div>
