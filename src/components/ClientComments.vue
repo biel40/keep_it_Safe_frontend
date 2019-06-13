@@ -2,7 +2,8 @@
     <q-card style="height: 70vh; width: 400px; max-width: 90vw;" ref="card" class="background-color-app-light flex column no-wrap justify-between q-card-container q-mb-md"> 
       <q-item>
         <q-scroll-area ref="scrollAreaComments" style="height: 50vh; width: 350px; max-width: 70vw;" :thumb-style="scrollStyle">
-          <!-- TODO: Cambiar esto por la información de la tabla comments de MySQL. -->
+          <!-- TODO: Cambiar esto por la información de la tabla comments de MySQL.  -->
+          
           <div v-for="number in 10" :key="number" class="q-py-xs q-pa-md">
             Lorem ipsum dolor sit amet, consectetur adipisicing
             elit, sed do eiusmod tempor incididunt ut labore et
