@@ -36,6 +36,12 @@ export default ({
       this.user = user;
       this.luggages;
     },
+    Comments: function(comment_id,comment_text, user){
+        this.comment_id = comment_id;
+        this.comment_text = comment_text;
+        this.user = user;
+        this.isThisUserComment = false
+    },
     Utils: {
       verifyTokenSignature: function (token, user) {
         axios
