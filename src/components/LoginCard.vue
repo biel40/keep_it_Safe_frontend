@@ -132,6 +132,7 @@ export default {
           password: this.loginPassword
         })
         .then(response => {
+          
           let token = response.data;
 
           this.$classes.Utils.verifyTokenSignature(token, this.user);
