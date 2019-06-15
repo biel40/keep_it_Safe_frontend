@@ -57,7 +57,8 @@ module.exports = function (ctx) {
         'QPopupProxy',
         'QSelect',
         'QTime',
-        'QSlideTransition'
+        'QSlideTransition',
+        'QChatMessage'
       ],
 
       directives: [
