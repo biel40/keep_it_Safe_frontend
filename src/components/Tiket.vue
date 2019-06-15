@@ -6,20 +6,32 @@
       Le atendío
       <span class="text-weight-light">{{user.name}} {{user.surnames}}</span>
     </p>
-    <div v-for="luggage in luggages" :key="luggage.type" class="text-h6 q-mt-xl">
+    <div v-for="luggage in luggages" :key="luggage.luggage_type" class="text-h6 q-mt-xl">
       <div v-if="luggage.count > 0" class="flex no-wrp justify-between">
         <div class="flex no-wrap">
           <p class="q-mr-md">{{luggage.count}}x</p>
-          <p> Reserva de equipaje <span>{{luggage.type | getName}}</span></p>
+          <p>
+            Reserva de equipaje
+            <span>{{luggage.getFullName()}}</span>
+          </p>
         </div>
-        <p>1000€</p>
+        <p>{{luggage | getPrice(invoice)}}€</p>
       </div>
     </div>
-    <div class="text-body1 q-mt-lg">
-      <p v-if="date"><span class="text-h6">Fecha de entrega: </span>{{date.initDate | getDateFormat}} a las {{date.initTime}}</p> 
-      <p v-if="date"><span class="text-h6">Fecha de recogida: </span>{{date.finishDate | getDateFormat}} a las {{date.finishTime}}</p> 
+    <div class="text-body1 q-mt-lg ">
+      <p v-if="invoice">
+        <span class="text-h6">Fecha de entrega:</span>
+        {{invoice.start_date | getDateFormat}}
+      </p>
+      <p v-if="invoice">
+        <span class="text-h6">Fecha de recogida:</span>
+        {{invoice.end_date | getDateFormat}}
+      </p>
     </div>
-    <p class="text-center text-h5 q-mt-lg"><span  class="text-h4">Total:</span> MUCHOS DINEROS</p>
+    <p v-if="invoice" class="text-center text-h5 q-mt-lg">
+      <span class="text-h4">Total:</span>
+      {{invoice.total_price}}€
+    </p>
   </q-card>
 </template>
 
@@ -28,37 +40,38 @@ import moment from "../../node_modules/moment";
 export default {
   name: "Tiket",
   data() {
-    return {
-    };
+    return {};
   },
   filters: {
-    getName: function(luggageType) {
-      switch (luggageType) {
-        case 's':
-          return "pequeño"
-          break;
-
-        case 'm':
-          return "mediano"
-          break;
-        case 'g':
-          return "grande"
-          break;
-      }
-    },
     getDateFormat: function(date) {
-      moment.locale('es');
+
+      moment.locale("es");
       let dateToFormat = moment(date, "DD-MM-YYYY");
       let formtedDate = dateToFormat.format("DD MMMM YYYY");
-      let arr =  formtedDate.split(" ");
-      arr[0] = arr[0]+ " de ";
-      arr[1] = arr[1]+ " de ";
-      let formating =   arr.toString();
-      formating = formating.replace(/,/g, " ")
+      let arr = formtedDate.split(" ");
+      
+      arr[0] = arr[0] + " de ";
+      arr[1] = arr[1] + " de ";
+      
+      let formating = arr.toString();
+      
+      formating = formating.replace(/,/g, " ");
+      
       return formating;
+
+    },
+    getPrice: function(luggage, invoice) {
+      
+      let start = moment(invoice.start_date, "DD-MM-YYYY HH:mm");
+      let end = moment(invoice.end_date, "DD-MM-YYYY HH:mm");
+      let duration = moment.duration(end.diff(start)).asDays();
+      duration++;
+
+      return Math.round(luggage.price * luggage.count * duration * 100) / 100;
+    
     }
   },
-  props: ["luggages", "date", "user"]
+  props: ["luggages", "invoice", "user"]
 };
 </script>
 

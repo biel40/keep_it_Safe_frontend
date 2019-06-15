@@ -1,7 +1,8 @@
 import axios from 'axios'
 
 export default ({
-  Vue, router
+  Vue,
+  router
 }) => {
   Vue.prototype.$classes = {
     Luggage: function (luggage_type, deep_dimension, high_dimension, price, width_dimension) {
@@ -10,31 +11,32 @@ export default ({
       this.high_dimension = high_dimension;
       this.price = price;
       this.width_dimension = width_dimension;
-      this.getFullName = function() {
-        switch (this.luggage_type) {
-          case "BIG":
-            return "grande"
-          case "MEDIUM":
-            return "mediano"
-          case "SMALL":
-            return "pequeño"
-          default:
-            return "error"
-        }
-      },
-      this.count = 0
+      this.getFullName = function () {
+          switch (this.luggage_type) {
+            case "BIG":
+              return "grande"
+            case "MEDIUM":
+              return "mediano"
+            case "SMALL":
+              return "pequeño"
+            default:
+              return "error"
+          }
+        },
+        this.count = 0
     },
-    Client : function(email, name, surnames){
+    Client: function (rol_user, email, name, surnames ) {
+      this.rol_user = rol_user
       this.email = email;
       this.name = name
       this.surnames = surnames
     },
-    Invoice: function(end_date, start_date, total_price, user, luggages){
+    Invoice: function (end_date, start_date, total_price, user, luggages) {
       this.end_date = end_date;
       this.start_date = start_date;
-      this.total_price = total_price;
+      this.total_price = total_price  || 0;
       this.user = user;
-      this.luggages;
+      this.luggages = luggages || [];
     },
     Utils: {
       verifyTokenSignature: function (token, user) {
@@ -48,7 +50,7 @@ export default ({
 
             let userToken = JSON.parse(response.data[0]);
             let token = response.data[1];
-  
+
             user.name = userToken.name;
             user.surnames = userToken.surnames;
             user.rol = userToken.rol;
@@ -59,13 +61,13 @@ export default ({
             localStorage.setItem('token', token);
 
             console.log("Token added to local storage = " + token);
-            
 
-            if(user.rol === "CLIENT"){
+
+            if (user.rol === "CLIENT") {
               router.push('/price');
-            } else if (user.rol === "EMPLOYEE"){
+            } else if (user.rol === "EMPLOYEE") {
               router.push('/employee/invoice/check-in');
-            }else if (user.rol === "ADMIN"){
+            } else if (user.rol === "ADMIN") {
               router.push('/admin/price/edit');
             }
           })

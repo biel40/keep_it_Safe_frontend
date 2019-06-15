@@ -6,7 +6,7 @@
       </div>
     </div>
     <div class="col-12 col-md-4" v-if="!$q.screen.lt.md">
-      <tiket :luggages="luggages" :date="date" :user="user"/>
+      <tiket :luggages="luggages" :invoice="invoice" :user="user"/>
     </div>
   </q-page>
 </template>
@@ -22,7 +22,7 @@ export default {
   name: "CheckingLuggage",
   data() {
     return {
-      date: null,
+      invoice: null,
       luggages: null,
       user: null
     };
@@ -32,7 +32,7 @@ export default {
     Tiket
   },
   mounted() {
-    this.date = this.$refs.invoice.getDate();
+    this.invoice = this.$refs.invoice.getInvoice();
     this.luggages = this.$refs.invoice.getLuggages();
   },
   created(){

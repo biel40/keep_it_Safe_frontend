@@ -4,46 +4,26 @@
     <div class="flex column no-wrap">
       <div class="col-12 flex row no-wrap justify-between">
         <div class="col-5">
-          <p class="formText">Nombre</p>
-          <q-input class="q-mb-md" outlined v-model="Client.nombre" dense/>
-        </div>
-        <div class="col-5">
-          <p class="formText">Apellidos</p>
-          <q-input class="q-mb-md" outlined v-model="Client.primerApellido" dense/>
-        </div>
-      </div>
-      <div class="col-12 flex row no-wrap justify-between">
-        <div class="col-5">
           <p class="formText">Correo electrónico</p>
-          <q-input class="q-mb-md" outlined v-model="Client.segundoApellido" dense/>
+          <q-input class="q-mb-md" outlined v-model="Invoice.user.email" dense/>
         </div>
       </div>
     </div>
     <div class="flex row row justify-between">
       <div class="flex column col-5">
         <p class="formText">Día de Reserva</p>
-        <q-input outlined v-model="InvoiceDate.initDate" dense label="Día" class="q-mb-lg">
+        <q-input outlined v-model="Invoice.start_date" dense label="Día" class="q-mb-lg">
           <template v-slot:append>
             <q-icon name="event" class="cursor-pointer">
               <q-popup-proxy ref="initDate">
                 <q-date
-                  v-model="InvoiceDate.initDate"
+                  v-model="Invoice.start_date"
                   mask="DD-MM-YYYY"
                   minimal
                   today-btn
                   :options="setAllowedDays"
-                  @input="() => $refs.initDate.hide()"
+                  @input="closeDate('initDate')"
                 />
-              </q-popup-proxy>
-            </q-icon>
-          </template>
-        </q-input>
-
-        <q-input outlined v-model="InvoiceDate.initTime" dense label="Hora">
-          <template v-slot:append>
-            <q-icon name="access_time" class="cursor-pointer">
-              <q-popup-proxy ref="initTime">
-                <q-time v-model="InvoiceDate.initTime" @input="() => $refs.initTime.hide()"/>
               </q-popup-proxy>
             </q-icon>
           </template>
@@ -52,35 +32,18 @@
 
       <div class="flex column col-5">
         <p class="formText">Día de Recogida</p>
-        <q-input outlined v-model="InvoiceDate.finishDate" dense label="Día" class="q-mb-lg">
+        <q-input outlined v-model="Invoice.end_date" dense label="Día" class="q-mb-lg">
           <template v-slot:append>
             <q-icon name="event" class="cursor-pointer">
               <q-popup-proxy ref="finishDate">
                 <q-date
-                  v-model="InvoiceDate.finishDate"
+                  v-model="Invoice.end_date"
                   mask="DD-MM-YYYY"
                   minimal
                   today-btn
                   :options="setAllowedDays"
-                  @input="() => $refs.finishDate.hide()"
+                  @input="closeDate('finishDate')"
                 />
-              </q-popup-proxy>
-            </q-icon>
-          </template>
-        </q-input>
-
-        <q-input
-          outlined
-          v-model="InvoiceDate.finishTime"
-          mask="time"
-          :rules="['time']"
-          dense
-          label="Hora"
-        >
-          <template v-slot:append>
-            <q-icon name="access_time" clatar xfzss="cursor-pointer">
-              <q-popup-proxy ref="finishTime">
-                <q-time v-model="InvoiceDate.finishTime" @input="() => $refs.finishTime.hide()"/>
               </q-popup-proxy>
             </q-icon>
           </template>
@@ -95,7 +58,7 @@
         v-for="luggage in luggages"
         :key="luggage.type"
       >
-        <span>Maleta {{luggage.fullName}}</span>
+        <span>Equipaje {{luggage.getFullName()}}</span>
         <div class="text-h6 flex column no-wrap items-center">
           <div class="q-mb-xs">
             <span class="text-center">Cantidad</span>
@@ -107,7 +70,7 @@
               class="q-mr-md"
               icon="remove"
               round
-              @click="removeLuggage(luggage.type)"
+              @click="removeLuggage(luggage.luggage_type)"
             />
             {{luggage.count}}
             <q-btn
@@ -116,7 +79,7 @@
               class="q-ml-md"
               icon="add"
               round
-              @click="addLuggage(luggage.type)"
+              @click="addLuggage(luggage.luggage_type)"
             />
           </div>
         </div>
@@ -128,7 +91,7 @@
 
 <script>
 import moment from "../../node_modules/moment";
-import { constants } from 'fs';
+
 let Luggage = function(type, fullName) {
   this.type = type;
   this.count = 0;
@@ -138,88 +101,123 @@ export default {
   name: "InvoiceForm",
   data() {
     return {
-      date: "",
       moment: null,
-      Client: {
-        DNI: "",
-        nombre: "",
-        primerApellido: "",
-        segundoApellido: ""
-      },
+      Invoice: null,
       InvoiceDate: {
         initDate: "",
-        initTime: "",
-        finishTime: "",
         finishDate: ""
       },
       luggages: [],
       message: "Unicamente se pueden añadir 5 matelas de este tipo como máximo"
     };
   },
-  created() {
-    this.moment = moment();
-    this.InvoiceDate.initDate = this.moment.format("DD-MM-YYYY");
-    this.InvoiceDate.finishDate = this.moment.format("DD-MM-YYYY");
-    this.InvoiceDate.initTime = this.moment.format("HH:mm");
-    this.InvoiceDate.finishTime = this.moment.format("HH:mm");
-  },
   methods: {
     addLuggage(type) {
-      let luggage = this.findLuggage(type);
-      if (type === luggage.type) {
-        if (luggage.count === 5) {
-          this.$q.notify({
-            message: this.message,
-            color: "red-10",
-            timeout: 1500
-          });
-        } else {
-          luggage.count++;
+      let difference = this.getDifferenceDays();
+      if (difference > 0) {
+        let luggage = this.findLuggage(type);
+        if (type === luggage.luggage_type) {
+          if (luggage.count === 5) {
+            this.$q.notify({
+              message: this.message,
+              color: "red-10",
+              timeout: 1500
+            });
+          } else {
+            this.Invoice.luggages.push(luggage);
+            luggage.count++;
+            this.updateFullPrice();
+          }
         }
+      } else {
+        this.sowErrorDay();
       }
     },
     removeLuggage(type) {
       let luggage = this.findLuggage(type);
       if (luggage.count !== 0) {
         luggage.count--;
+        let index = this.Invoice.luggages.findIndex(findLuggage => {
+          return luggage.luggage_type === findLuggage.luggage_type;
+        });
+        this.Invoice.luggages.splice(index, 1);
+        this.updateFullPrice();
       }
     },
     findLuggage(type) {
       return this.luggages.find(luggage => {
-        return type === luggage.type;
+        return type === luggage.luggage_type;
       });
     },
-
-    setAllowedDays(date) {
-      return this.moment.format("YYYY/MM/DD") <= date;
-    },
-    getDate() {
-      return this.InvoiceDate;
-    },
-    getLuggages() {
-      return this.luggages;
+    closeDate(name) {
+      this.updateFullPrice();
+      this.$refs[name].hide();
     },
     createInvoice() {
-      let a = this.luggages[0];
-      let obj = {
-        deep_dimension: a.deep_dimension,
-        high_dimension: a.high_dimension,
-        luggage_type: a.luggage_type,
-        price: a.price,
-        width_dimension: a.width_dimension
-      };
-      console.log(a)
+      console.log("El invocie que voy a enviar al seervuidor", this.Invoice);
       this.$axios
-        .post("http://localhost:8081/luggages", a)
+        .post("http://localhost:8081/invoice", this.Invoice)
         .then(response => {
           console.log(response);
         })
         .catch(error => {
           console.log(error);
         });
+    },
+    updateFullPrice() {
+      let duration = this.getDifferenceDays();
+      if (duration < 0) {
+        this.sowErrorDay();
+      } else {
+        let total_price = this.luggages.reduce((price, lugagge) => {
+          if (lugagge.count > 0) {
+            return (price += lugagge.price * lugagge.count * duration);
+          }
+          return price;
+        }, 0);
+        this.Invoice.total_price = Math.round(total_price * 100) / 100;
+      }
+    },
+    getDifferenceDays() {
+      let start = moment(this.Invoice.start_date, "DD-MM-YYYY HH:mm");
+      let end = moment(this.Invoice.end_date, "DD-MM-YYYY HH:mm");
+      let duration = moment.duration(end.diff(start)).asDays();
+      duration ++;
+      return duration;
+    },
+    sowErrorDay() {
+      this.Invoice.total_price = 0;
+      this.luggages.forEach(luggage => {
+        luggage.count = 0;
+      });
+      this.$q.notify({
+        message:
+          "Porfavor introduzca una fecha de entrega menor o igual a la fecha de recogida",
+        color: "red-10",
+        icon: "error",
+        position: "center",
+        timeout: 2000
+      });
+    },
+    setAllowedDays(date) {
+      return this.moment.format("YYYY/MM/DD") <= date;
+    },
+    getLuggages() {
+      return this.luggages;
+    },
+    getInvoice() {
+      return this.Invoice;
     }
   },
   created() {
+    let invoice = new this.$classes.Invoice();
+    invoice.user = new this.$classes.Client("CLIENT");
+    this.Invoice = invoice;
+
+    this.moment = moment();
+    this.Invoice.start_date = this.moment.format("DD-MM-YYYY");
+    this.Invoice.end_date = this.moment.format("DD-MM-YYYY");
+
     this.$axios
       .get("http://localhost:8081/luggages")
       .then(response => {
