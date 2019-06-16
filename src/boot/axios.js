@@ -36,14 +36,13 @@ export default ({
     return response;
 
   }, function (error) {
-
     if (error.response.status === 401) {
       //TODO variable isUserLogin not work
       console.log('Unauthorized response');
       localStorage.clear();
       router.push('/price');
     }
-
+    return Promise.reject(error);
   });
 
   Vue.prototype.$axios = axios
