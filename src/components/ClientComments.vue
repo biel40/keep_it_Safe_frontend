@@ -3,11 +3,7 @@
       
         <q-card-section class="scroll" ref="scrollAreaComments">
 
-<<<<<<< HEAD
           <div v-for="comment in comments" :key="comment.comment_id" class="q-pa-md">
-=======
-          <div v-for="comment in comments" :key="comment.comment_id">
->>>>>>> 79989bad73063996d0a919b5a3b3370ef10b2118
 
             <q-chat-message
               v-if="comment.user && comment.user.imageUrl != 'null' && !comment.isThisUserComment "
@@ -140,19 +136,6 @@ export default {
   },
   created() {
     this.getComments();
-<<<<<<< HEAD
-=======
-  },
-  computed:{
-    scrollStyle () {
-      return {
-        borderRadius: '5px',
-        backgroundColor: '#43a047',
-        width: '5px',
-        opacity: 0.75
-      }
-    }
->>>>>>> 79989bad73063996d0a919b5a3b3370ef10b2118
   },
   updated() {
     this.scrolling();
