@@ -119,9 +119,6 @@ export default {
 
       this.$axios.post('http://localhost:8081/comments', this.commentToSend)
       .then(response => {
-          console.log("enviando");
-          console.log(this.commentToSend);
-
           this.comments.push(this.commentToSend);
           this.inputModel = '',
           this.scrolling()
