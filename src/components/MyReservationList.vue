@@ -28,7 +28,7 @@
         </div>
         <div class="flex row no-wrap items-center">
           <span class="text-h6 q-mr-xs">Medidas</span>
-          <span v-for="size in reservation.sizes">{{size.count}}x {{ size.size }}</span>
+          <span v-for="size in reservation.sizes">{{size.count}} x {{ size.size }} </span>
         </div>
         <div>
           <span class="text-h6 q-mr-xs">Precio</span>
@@ -92,6 +92,16 @@ export default {
       this.reservations = this.reservations.filter(reservation => {
         return id != reservation.id;
       });
+
+      //TODO: Borrar la reserva en el BackEnd
+      this.$axios.delete('http://localhost:8081/reservation')
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      }); 
+
     },
     redirect() {
       this.$router.push("/reservation");
@@ -102,4 +112,3 @@ export default {
 
 <style>
 </style>
-@click="redirect()

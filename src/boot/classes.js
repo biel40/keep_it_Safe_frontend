@@ -57,6 +57,9 @@ export default ({
             let userToken = JSON.parse(response.data[0]);
             let token = response.data[1];
 
+            console.log(userToken.email);
+            
+            user.email = userToken.email;
             user.name = userToken.name;
             user.surnames = userToken.surnames;
             user.rol = userToken.rol;

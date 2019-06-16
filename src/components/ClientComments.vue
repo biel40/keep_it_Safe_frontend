@@ -1,18 +1,26 @@
 <template>
     <q-card style="height: 70vh; width: 400px; max-width: 90vw;" ref="card" class="background-color-app-light flex column no-wrap justify-between q-card-container q-mb-md"> 
-      <q-item>
-        <q-scroll-area ref="scrollAreaComments" style="height: 350px; width: 350px; max-width: 70vw;" :thumb-style="scrollStyle">
-          <!-- Este div se pintará para cada comentario que haya en los comentarios -->
+
+        <q-scroll-area id="scrollArea" ref="scrollAreaComments" style="height: 50vh; max-height: 50vh; width: 400px; max-width: 70vw;" :thumb-style="scrollStyle">
 
           <div v-for="comment in comments" :key="comment.comment_id" class="">
 
             <q-chat-message
-              v-if="comment.user && comment.user.imageUrl != 'null' "
+              v-if="comment.user && comment.user.imageUrl != 'null' && comment.isThisUserComment == null "
               class=""
               :name="comment.user.name"
               :avatar="comment.user.imageUrl"
               :text="[comment.comment_text]"
               
+            />
+
+            <q-chat-message
+              v-if="comment.user && comment.user.imageUrl != 'null' && comment.isThisUserComment != null "
+              class=""
+              :name="comment.user.name"
+              :avatar="comment.user.imageUrl"
+              :text="[comment.comment_text]"
+              sent
             />
 
             <q-chat-message
@@ -44,7 +52,7 @@
           </div>
 
         </q-scroll-area>
-      </q-item>
+      
       
       <q-item>
         <q-item-section class="flex column items-center q-mt-md">
@@ -59,6 +67,7 @@
 
 <script>
 import { delay } from 'q';
+import { setTimeout } from 'timers';
 
 export default {
   name: 'ClientComments',
@@ -66,17 +75,15 @@ export default {
     return {
         inputModel: '',
         comments: [],
-        commentToSend: {}
+        commentToSend: {},
     }
   },
   methods: {
       getComments() {
         this.$axios.get('http://localhost:8081/comments')
         .then(response => {
-
           let commentTest = this.$classes.Comments = response.data;
           this.comments = commentTest;
-
         })
         .catch(error => {
             console.log(error);
@@ -86,7 +93,7 @@ export default {
 
       sendComment() {
 
-        let user = localStorage.getItem('user');
+        let user = JSON.parse(localStorage.getItem('user'));
 
         this.commentToSend = {
           comment_text: this.inputModel,
@@ -99,12 +106,21 @@ export default {
           console.log("Response: " + response);
           this.comments.push(this.commentToSend);
           this.inputModel = '',
-          this.$refs.scrollAreaComments.setScrollPosition("50vm");
+          this.scrolling()
       })
       .catch(error => {
           console.log(error);
       });
 
+    },
+    scrolling() {
+      //FIXME: Esto habría que cambiarlo.
+      setTimeout( () => {
+        this.$refs.scrollAreaComments.setScrollPosition(
+          this.$refs.scrollAreaComments.scrollSize, 150
+        );
+      }, 100)
+      
     }
   },
   created() {
@@ -120,8 +136,8 @@ export default {
       }
     }
   },
-  mounted() {
-    this.$refs.scrollAreaComments.setScrollPosition(300);
+  updated() {
+    this.scrolling();
   }
 }
 

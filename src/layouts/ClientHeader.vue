@@ -153,7 +153,9 @@ export default {
       let token = localStorage.getItem("token");
       this.$axios
         .post("http://localhost:8081/logOut", token)
-        .then(response => {})
+        .then(response => {
+          window.location.reload();
+        })
         .catch(error => {
           localStorage.clear();
         });
@@ -171,8 +173,10 @@ export default {
   },
   created() {
     this.isLoginUser = false;
+
     if (localStorage.getItem("token")) {
       console.log("localStorage", localStorage.getItem("token"));
+      
       this.$classes.Utils.verifyTokenSignature(
         localStorage.getItem("token"),
         this.user

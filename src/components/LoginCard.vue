@@ -134,7 +134,6 @@ export default {
         .then(response => {
           
           let token = response.data;
-
           this.$classes.Utils.verifyTokenSignature(token, this.user);
 
           // Cerrar el modal
@@ -164,7 +163,6 @@ export default {
           if (error.response.status == 401)
           this.$router.push('/error401');
         
-
         });
     }
   }
