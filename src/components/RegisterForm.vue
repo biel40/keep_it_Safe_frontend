@@ -85,7 +85,7 @@ import {
 } from "vuelidate/lib/validators";
 
 export default {
-  // name: 'ComponentName',
+  name: 'RegisterForm',
   data() {
     return {
       user: {
@@ -101,16 +101,14 @@ export default {
   methods: {
     doRegister() {
       this.$v.$touch();
-      console.log(this.$v.$error);
       if (this.$v.$error) return;
       
       // Falta implementar el registro de usuarios.
-      if (this.isClientView) {
+      if (this.isUserView) {
         this.user.rol_user = "CLIENT";
       } else {
         this.user.rol_user = "EMPLOYEE";
       }
-      console.log(this.user);
       this.$axios
         .post("http://localhost:8081/user", this.user)
         .then(response => {

@@ -5,7 +5,15 @@
       <div class="col-12 flex row no-wrap justify-between">
         <div class="col-5">
           <p class="formText">Correo electrónico</p>
-          <q-input class="q-mb-md" outlined v-model="Invoice.user.email" dense/>
+          <q-input 
+            class="q-mb-md" 
+            outlined v-model="Invoice.user.email" 
+            dense 
+            type="email"
+            :error="$v.Invoice.user.email.$error"
+            @blur="$v.Invoice.user.email.$touch"
+            error-message="correo electrónico invalido"
+          />
         </div>
       </div>
     </div>
@@ -91,7 +99,13 @@
 
 <script>
 import moment from "../../node_modules/moment";
-
+import {
+  required,
+  minLength,
+  alpha,
+  sameAs,
+  email
+} from "vuelidate/lib/validators";
 let Luggage = function(type, fullName) {
   this.type = type;
   this.count = 0;
@@ -154,6 +168,9 @@ export default {
       this.$refs[name].hide();
     },
     createInvoice() {
+      this.$v.$touch();
+      if (this.$v.$error) return;
+      
       console.log("El invocie que voy a enviar al seervuidor", this.Invoice);
       this.$axios
         .post("http://localhost:8081/invoice", this.Invoice)
@@ -238,7 +255,18 @@ export default {
         console.log(error);
       });
   },
-  props: ["title"]
+  props: ["title"],
+    validations:{
+        Invoice: {
+          user: {
+            email:{
+              required,
+              email 
+            }
+          },
+          }
+        },
+      
 };
 </script>
 
