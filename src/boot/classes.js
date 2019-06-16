@@ -31,11 +31,13 @@ export default ({
       this.name = name
       this.surnames = surnames
     },
-    Invoice: function (end_date, start_date, total_price, user, luggages) {
+    Invoice: function (invoice_id, end_date, start_date, total_price, user, luggages, isVerified) {
+      this.invoice_id = invoice_id;
       this.end_date = end_date;
       this.start_date = start_date;
       this.total_price = total_price  || 0;
       this.user = user;
+      this.isVerified = isVerified;
       this.luggages = luggages || [];
     },
     Comments: function(comment_id, comment_text, user){

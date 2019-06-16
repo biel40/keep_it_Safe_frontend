@@ -16,6 +16,7 @@
 </style>
 
 <script>
+
 import InvoiceForm from "../../components/InvoiceForm.vue";
 import Tiket from "../../components/Tiket.vue";
 export default {
@@ -39,4 +40,5 @@ export default {
     this.user =JSON.parse(localStorage.getItem("user")) ;
   }
 };
+
 </script>

@@ -3,26 +3,24 @@
 
         <q-scroll-area id="scrollArea" ref="scrollAreaComments" style="height: 50vh; max-height: 50vh; width: 400px; max-width: 70vw;" :thumb-style="scrollStyle">
 
-          <div v-for="comment in comments" :key="comment.comment_id" class="">
+          <div v-for="comment in comments" :key="comment.comment_id">
 
             <q-chat-message
-              v-if="comment.user && comment.user.imageUrl != 'null' && comment.isThisUserComment == null "
-              class=""
+              v-if="comment.user && comment.user.imageUrl != 'null' && !comment.isThisUserComment "
               :name="comment.user.name"
               :avatar="comment.user.imageUrl"
               :text="[comment.comment_text]"
               
             />
-
+      
             <q-chat-message
-              v-if="comment.user && comment.user.imageUrl != 'null' && comment.isThisUserComment != null "
-              class=""
+              v-else-if="comment.user && comment.user.imageUrl != 'null' && comment.isThisUserComment "
               :name="comment.user.name"
               :avatar="comment.user.imageUrl"
               :text="[comment.comment_text]"
               sent
             />
-
+           
             <q-chat-message
               v-if="comment.user && comment.user.imageUrl == 'null' "
               :name="comment.user.name"
@@ -32,8 +30,7 @@
             />
 
             <q-chat-message
-              v-if="comment.user == null && comment.isThisUserComment == null"
-              class=""
+              v-if="comment.user == null && comment.isThisUserComment == false"
               name="Anónimo"
               avatar="https://image.flaticon.com/icons/png/128/74/74472.png"
               :text="[comment.comment_text]"
@@ -42,7 +39,6 @@
 
             <q-chat-message
               v-if="comment.user == null && comment.isThisUserComment == true"
-              class=""
               name="Anónimo"
               avatar="https://image.flaticon.com/icons/png/128/74/74472.png"
               :text="[comment.comment_text]"
@@ -75,15 +71,35 @@ export default {
     return {
         inputModel: '',
         comments: [],
-        commentToSend: {},
+        commentToSend: null,
     }
   },
   methods: {
       getComments() {
         this.$axios.get('http://localhost:8081/comments')
         .then(response => {
-          let commentTest = this.$classes.Comments = response.data;
-          this.comments = commentTest;
+          
+          response.data.forEach(comment => {
+
+            let commentObj = new this.$classes.Comments(comment.comment_id, comment.comment_text, comment.user);
+            let user = JSON.parse(localStorage.getItem('user'));
+           
+            let currentUserEmail;
+
+            if (user != null) {
+              currentUserEmail = user.email;
+            } 
+            
+            if (user != null && comment.user != null && comment.user.email == currentUserEmail) {
+              commentObj.isThisUserComment = true;
+            } else commentObj.isThisUserComment = false;
+            
+            console.log(commentObj);
+
+            this.comments.push(commentObj);
+
+          });
+
         })
         .catch(error => {
             console.log(error);
@@ -103,7 +119,9 @@ export default {
 
       this.$axios.post('http://localhost:8081/comments', this.commentToSend)
       .then(response => {
-          console.log("Response: " + response);
+          console.log("enviando");
+          console.log(this.commentToSend);
+
           this.comments.push(this.commentToSend);
           this.inputModel = '',
           this.scrolling()
@@ -124,7 +142,7 @@ export default {
     }
   },
   created() {
-     this.getComments();
+    this.getComments();
   },
   computed:{
     scrollStyle () {
