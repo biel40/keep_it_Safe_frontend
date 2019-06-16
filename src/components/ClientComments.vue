@@ -1,9 +1,9 @@
 <template>
-    <q-card style="height: 70vh; width: 400px; max-width: 90vw;" ref="card" class="background-color-app-light flex column no-wrap justify-between q-card-container q-mb-md"> 
+    <q-card style="height: 70vh; width: 400px; max-width: 90vw;" ref="card" class="flex column no-wrap justify-between"> 
+      
+        <q-card-section class="scroll" ref="scrollAreaComments">
 
-        <q-scroll-area id="scrollArea" ref="scrollAreaComments" style="height: 50vh; max-height: 50vh; width: 400px; max-width: 70vw;" :thumb-style="scrollStyle">
-
-          <div v-for="comment in comments" :key="comment.comment_id" class="">
+          <div v-for="comment in comments" :key="comment.comment_id" class="q-pa-md">
 
             <q-chat-message
               v-if="comment.user && comment.user.imageUrl != 'null' && comment.isThisUserComment == null "
@@ -51,15 +51,13 @@
 
           </div>
 
-        </q-scroll-area>
+        </q-card-section>
       
       
-      <q-item>
-        <q-item-section class="flex column items-center q-mt-md">
-            <q-input class="col-11" style="width: 300px;" rounded outlined v-model="inputModel" label="Mensaje" />
-            <q-btn v-on:click="sendComment()" round color="primary" icon="send" />
-        </q-item-section>
-      </q-item>
+      <q-card-section class="flex no-wrap items-center justify-between q-my-md">
+          <q-input class="col-11" style="width: 300px;" rounded outlined v-model="inputModel" label="Mensaje" />
+          <q-btn v-on:click="sendComment()" round color="primary" icon="send" />
+      </q-card-section>
 
     </q-card>
 
@@ -114,27 +112,12 @@ export default {
 
     },
     scrolling() {
-      //FIXME: Esto habría que cambiarlo.
-      setTimeout( () => {
-        this.$refs.scrollAreaComments.setScrollPosition(
-          this.$refs.scrollAreaComments.scrollSize, 150
-        );
-      }, 100)
-      
+      let scrollItem = document.querySelector('.scroll');
+      scrollItem.scrollTop = scrollItem.scrollHeight;
     }
   },
   created() {
-     this.getComments();
-  },
-  computed:{
-    scrollStyle () {
-      return {
-        borderRadius: '5px',
-        backgroundColor: '#43a047',
-        width: '5px',
-        opacity: 0.75
-      }
-    }
+    this.getComments();
   },
   updated() {
     this.scrolling();
