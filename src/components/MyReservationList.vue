@@ -20,21 +20,21 @@
           {{ reservation.id }}
         </div>
         <div>
-          <span class="text-h6 q-mr-xs">Día</span>
+          <span class="text-h6 q-mr-xs"> Día </span>
           <span>
             <b>{{ reservation.startDay }}</b> hasta
             <b>{{ reservation.endDay }}</b>
           </span>
         </div>
         <div class="flex row no-wrap items-center">
-          <span class="text-h6 q-mr-xs">Medidas</span>
-          <span v-for="size in reservation.sizes">{{size.count}} x {{ size.size }} </span>
+          <span class="text-h6 q-mr-xs"> Medidas </span>
+          <span v-for="size in reservation.sizes"> {{size.count}} x {{ size.size }} </span>
         </div>
         <div>
           <span class="text-h6 q-mr-xs">Precio</span>
           {{ reservation.Price }}€
         </div>
-        <q-btn @click="removeReservation(reservation.id)" color="negative">Cancelar</q-btn>
+        <q-btn @click="removeReservation(reservation.id)" color="negative"> Cancelar </q-btn>
       </q-card>
     </q-card-section>
   </q-card>
@@ -48,9 +48,9 @@
       <p class="text-h3 text-center text-green col-12">¡Vaya!</p>
       <p
         class="text-h6 text-center q-py-lg text-green col-8"
-      >Parece que no tienes ninguan reserva, puedes reservar ahora mismo pinchando al boton de abajo</p>
-      <q-btn v-if="this.$router.currentRoute.path =='/reservation'" color="primary col-12 q-py-md" v-close-popup>Reserva ahora</q-btn>
-      <q-btn v-else color="primary col-12 q-py-md" @click="redirect()">Reserva ahora</q-btn>
+      > Parece que no tienes ninguan reserva, puedes reservar ahora mismo clicando al boton de abajo! </p>
+      <q-btn v-if="this.$router.currentRoute.path =='/reservation'" color="primary col-12 q-py-md" v-close-popup> Reserva ahora </q-btn>
+      <q-btn v-else color="primary col-12 q-py-md" @click="redirect()"> Reserva ahora </q-btn>
     </q-card-section>
   </q-card>
 </template>
@@ -61,42 +61,41 @@ export default {
   // name: 'ComponentName',
   data() {
     return {
-      reservations: [
-        {
-          id: 2442342,
-          startDay: "10/10/2019 18:30h",
-          endDay: "11/10/2019 18:30h",
-          sizes: [{ size: "Mediana", count: 2 }, { size: "Pequeña", count: 1 }],
-          Price: 20.5
-        },
-        {
-          id: 2442343,
-          startDay: "10/10/2019 18:30h",
-          endDay: "11/10/2019 18:30h",
-          sizes: [{ size: "Mediana", count: 2 }, { size: "Pequeña", count: 1 }],
-          Price: 20.5
-        },
-        {
-          id: 2442345,
-          startDay: "10/10/2019 18:30h",
-          endDay: "11/10/2019 18:30h",
-          sizes: [{ size: "Mediana", count: 2 }, { size: "Pequeña", count: 1 }],
-          Price: 20.5
-        }
-      ]
+      reservations: []
     };
   },
   props: ["user"],
+  created() {
+
+      let user = localStorage.getItem('user');
+      console.log(JSON.parse(user));
+
+      this.$axios.get('http://localhost:8081/invoice/user/notVerified', JSON.parse(user))
+      .then((response) => {
+
+        response.data.forEach(invoice => {
+          let invoiceObj = new this.$classes.Invoice(invoice);
+          console.log(invoice);
+
+          this.reservations.push(invoice);
+        });
+
+      })
+      .catch((error) => {
+        console.log(error);
+      }); 
+
+  },
   methods: {
     removeReservation(id) {
-      this.reservations = this.reservations.filter(reservation => {
-        return id != reservation.id;
-      });
 
-      //TODO: Borrar la reserva en el BackEnd
-      this.$axios.delete('http://localhost:8081/reservation')
-      .then(function (response) {
-        console.log(response);
+      this.$axios.delete('http://localhost:8081/invoice', id)
+      .then((response) => {
+
+        this.reservations = this.reservations.filter(reservation => {
+          return id != reservation.id;
+        });
+
       })
       .catch(function (error) {
         console.log(error);
@@ -108,6 +107,7 @@ export default {
     }
   }
 };
+
 </script>
 
 <style>

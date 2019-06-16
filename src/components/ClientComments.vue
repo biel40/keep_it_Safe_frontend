@@ -3,26 +3,28 @@
       
         <q-card-section class="scroll" ref="scrollAreaComments">
 
+<<<<<<< HEAD
           <div v-for="comment in comments" :key="comment.comment_id" class="q-pa-md">
+=======
+          <div v-for="comment in comments" :key="comment.comment_id">
+>>>>>>> 79989bad73063996d0a919b5a3b3370ef10b2118
 
             <q-chat-message
-              v-if="comment.user && comment.user.imageUrl != 'null' && comment.isThisUserComment == null "
-              class=""
+              v-if="comment.user && comment.user.imageUrl != 'null' && !comment.isThisUserComment "
               :name="comment.user.name"
               :avatar="comment.user.imageUrl"
               :text="[comment.comment_text]"
               
             />
-
+      
             <q-chat-message
-              v-if="comment.user && comment.user.imageUrl != 'null' && comment.isThisUserComment != null "
-              class=""
+              v-else-if="comment.user && comment.user.imageUrl != 'null' && comment.isThisUserComment "
               :name="comment.user.name"
               :avatar="comment.user.imageUrl"
               :text="[comment.comment_text]"
               sent
             />
-
+           
             <q-chat-message
               v-if="comment.user && comment.user.imageUrl == 'null' "
               :name="comment.user.name"
@@ -32,8 +34,7 @@
             />
 
             <q-chat-message
-              v-if="comment.user == null && comment.isThisUserComment == null"
-              class=""
+              v-if="comment.user == null && comment.isThisUserComment == false"
               name="Anónimo"
               avatar="https://image.flaticon.com/icons/png/128/74/74472.png"
               :text="[comment.comment_text]"
@@ -42,7 +43,6 @@
 
             <q-chat-message
               v-if="comment.user == null && comment.isThisUserComment == true"
-              class=""
               name="Anónimo"
               avatar="https://image.flaticon.com/icons/png/128/74/74472.png"
               :text="[comment.comment_text]"
@@ -73,15 +73,35 @@ export default {
     return {
         inputModel: '',
         comments: [],
-        commentToSend: {},
+        commentToSend: null,
     }
   },
   methods: {
       getComments() {
         this.$axios.get('http://localhost:8081/comments')
         .then(response => {
-          let commentTest = this.$classes.Comments = response.data;
-          this.comments = commentTest;
+          
+          response.data.forEach(comment => {
+
+            let commentObj = new this.$classes.Comments(comment.comment_id, comment.comment_text, comment.user);
+            let user = JSON.parse(localStorage.getItem('user'));
+           
+            let currentUserEmail;
+
+            if (user != null) {
+              currentUserEmail = user.email;
+            } 
+            
+            if (user != null && comment.user != null && comment.user.email == currentUserEmail) {
+              commentObj.isThisUserComment = true;
+            } else commentObj.isThisUserComment = false;
+            
+            console.log(commentObj);
+
+            this.comments.push(commentObj);
+
+          });
+
         })
         .catch(error => {
             console.log(error);
@@ -101,7 +121,9 @@ export default {
 
       this.$axios.post('http://localhost:8081/comments', this.commentToSend)
       .then(response => {
-          console.log("Response: " + response);
+          console.log("enviando");
+          console.log(this.commentToSend);
+
           this.comments.push(this.commentToSend);
           this.inputModel = '',
           this.scrolling()
@@ -118,6 +140,19 @@ export default {
   },
   created() {
     this.getComments();
+<<<<<<< HEAD
+=======
+  },
+  computed:{
+    scrollStyle () {
+      return {
+        borderRadius: '5px',
+        backgroundColor: '#43a047',
+        width: '5px',
+        opacity: 0.75
+      }
+    }
+>>>>>>> 79989bad73063996d0a919b5a3b3370ef10b2118
   },
   updated() {
     this.scrolling();
