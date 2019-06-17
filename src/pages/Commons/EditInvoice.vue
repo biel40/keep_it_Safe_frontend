@@ -6,11 +6,11 @@
         <q-card v-show="visible" id="card-filter">
           <q-card-section>
             <div class="row no-wrap justify-between">
-              <p class="font-search q-mr-md">Email</p>
+              <p class="font-search q-mr-md"> Email </p>
               <q-input outlined dense class="input-search"></q-input>
             </div>
             <div class="row no-wrap justify-between">
-              <p class="font-search q-mr-md">Id factura</p>
+              <p class="font-search q-mr-md"> Identificador de factura </p>
               <q-input outlined dense class="input-search"></q-input>
             </div>
             <div class="row no-wrap justify-between">
@@ -36,38 +36,33 @@
       </q-slide-transition>
     </div>
     <q-card>
-      <q-card-section>
-        <div class="text-h6">Our Changing Planet</div>
-        <div class="text-h6">Our Changing Planet</div>
-        <div class="text-h6">Our Changing Planet</div>
-        <div class="text-h6">Our Changing Planet</div>
-        <div class="text-h6">Our Changing Planet</div>
-        <div class="text-h6">Our Changing Planet</div>
-        <div class="text-h6">Our Changing Planet</div>
-        <div class="text-h6">Our Changing Planet</div>
-        <div class="text-h6">Our Changing Planet</div>
-        <div class="text-h6">Our Changing Planet</div>
-        <div class="text-subtitle2">by John Doe</div>
-        <div class="text-h6">Our Changing Planet</div>
-        <div class="text-h6">Our Changing Planet</div>
-        <div class="text-h6">Our Changing Planet</div>
-        <div class="text-h6">Our Changing Planet</div>
-        <div class="text-h6">Our Changing Planet</div>
-        <div class="text-h6">Our Changing Planet</div>
-        <div class="text-h6">Our Changing Planet</div>
-        <div class="text-h6">Our Changing Planet</div>
+      <q-card-section class="scroll">
+        <q-list>
+          <q-item v-for="invoice in invoices" :key="invoice.invoice_id" clickable v-ripple>
+            Identificador: {{invoice.invoice_id}}
+            <q-btn class="q-pa-md" icon="event" />
+            <div class="column">
+              {{invoice.start_date}} hasta {{invoice.end_date}}
+            </div>
+            {{invoice.luggages | filtro}}
+            {{}}
+          </q-item>
+        </q-list>
       </q-card-section>
     </q-card>
   </q-page>
 </template>
 
 <script>
+import moment from 'moment';
+
 export default {
   // name: 'PageName',
   data() {
     return {
       visible: false,
-      date: ""
+      date: "",
+      invoices: []
     };
   },
   methods: {
@@ -75,35 +70,60 @@ export default {
       this.visible = !this.visible;
     }
   }, 
-  created(){
+  created() {
     this.$classes.Utils.verifyTokenSignature(
         localStorage.getItem("token"),
         JSON.parse(localStorage.getItem("user"))
     );
 
-    this.$axios
-        .get("http://localhost:8081/invoices")
-        .then(response => {
-          let invoices = response.data;
-          console.log(invoices);
-          console.log();
-        })
-        .catch(error => {
-          // Con clear() quitamos todos los elementos del Local Storage
-          console.log("get invoices error: " + error)
-        });
+    let user = JSON.parse(localStorage.getItem('user'));
 
-         this.$axios
+    if (user && user.rol_user == "EMPLOYEE") {
+      this.$axios
         .get("http://localhost:8081/invoices/current")
         .then(response => {
+
           let invoices = response.data;
-          console.log("current",invoices);
-          console.log();
+
+          invoices.forEach(invoice => {
+
+            moment.locale('es');
+
+            invoice.start_date = moment(invoice.start_date.substring(0, 10)).format("dddd DD/MM/YYYY");
+            invoice.end_date = moment(invoice.end_date.substring(0, 10)).format("dddd DD/MM/YYYY");
+              
+
+            this.invoices.push(invoice);
+          });
+
         })
         .catch(error => {
-          // Con clear() quitamos todos los elementos del Local Storage
           console.log("get invoices error: " + error)
         });
+    } else if (user && user.rol_user == "ADMIN") {
+        this.$axios
+        .get("http://localhost:8081/invoices")
+        .then(response => {
+
+          let invoices = response.data;
+
+          invoices.forEach(invoice => {
+            this.invoices.push(invoice);
+          });
+
+        })
+        .catch(error => {
+          console.log("Get Invoices error: " + error)
+        });
+    } 
+    
+  },
+  filters:{
+    filtro(luggages) {
+      // Cuando haces return en el filtro es lo que se pintará en la vista.
+      // En el created, guardar en una variable reactiva los tres tipos de maletas, que se pillan del Servidor.
+      // Hay un ejemplo en admin/edit/price y en /prices.
+    }
   }
 };
 </script>

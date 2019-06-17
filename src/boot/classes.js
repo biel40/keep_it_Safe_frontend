@@ -71,7 +71,7 @@ export default ({
             localStorage.setItem("user", JSON.stringify(user));
             localStorage.setItem('token', token);
 
-
+            /*
             if (user.rol_user === "CLIENT") {
               router.push('/price');
             } else if (user.rol_user === "EMPLOYEE") {
@@ -79,6 +79,7 @@ export default ({
             } else if (user.rol_user === "ADMIN") {
               router.push('/admin/price/edit');
             }
+            */
           })
           .catch(function (error) {
             console.log(error);
