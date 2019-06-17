@@ -57,8 +57,6 @@ export default ({
 
             let userToken = JSON.parse(response.data[0]);
             let token = response.data[1];
-
-            console.log(userToken.email);
             
             user.userId = userToken.userId;
             user.email = userToken.email;
@@ -70,26 +68,68 @@ export default ({
 
             localStorage.setItem("user", JSON.stringify(user));
             localStorage.setItem('token', token);
+            
+            this.verifyAccesPath(user);
 
-            /*
-            if (user.rol_user === "CLIENT") {
-              router.push('/price');
-            } else if (user.rol_user === "EMPLOYEE") {
-              router.push('/employee/invoice/check-in');
-            } else if (user.rol_user === "ADMIN") {
-              router.push('/admin/price/edit');
-            }
-            */
           })
           .catch(function (error) {
             console.log(error);
-
+            router.push("/price");
             localStorage.clear();
           });
         } else {
-          router.push("/price");
+          this.verifyAccesPath({rol_user: "DEFAULT"});
         }
         
+      },
+      verifyAccesPath: function (user) {
+        console.log(user);
+        let allowPaths = [
+          {
+            rol_user: "CLIENT",
+            allowPaths: ["/price", "/reservation", "/schedule"]
+          },
+          {
+            rol_user: "EMPLOYEE",
+            allowPaths: ["/employee/invoice/check-in", "/employee/invoice/validate", "/employee/invoice/edit"]
+          },
+          {
+            rol_user: "ADMIN",
+            allowPaths: ["/admin/user/create", "/admin/price/edit", "/admin/invoice/edit"]
+          },
+          {
+            rol_user: "DEFAULT",
+            allowPaths: ["/price", "/schedule"]
+          }
+        ]
+
+        let routePath = router.history.current.fullPath;
+
+        let userPathAllow = allowPaths.find(path => {
+          return path.rol_user == user.rol_user
+        });
+
+        let findPathAllow = userPathAllow.allowPaths.find(path => {
+          return path == routePath;
+        });
+
+        if(!findPathAllow){
+          let path = this.getPathUser(user.rol_user);
+          console.log(path)
+          router.push(path);
+        }
+      },
+      getPathUser: function(rol_user){
+        switch (rol_user) {
+          case "CLIENT":
+            return "/price"
+          case "EMPLOYEE":
+            return "/employee/invoice/check-in"  
+          case "ADMIN":
+            return "/admin/user/create"
+          case "DEFAULT":
+              return "/price"  
+        }
       }
     }
   }

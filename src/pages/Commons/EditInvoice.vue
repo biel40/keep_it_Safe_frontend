@@ -123,6 +123,7 @@ export default {
       // Cuando haces return en el filtro es lo que se pintará en la vista.
       // En el created, guardar en una variable reactiva los tres tipos de maletas, que se pillan del Servidor.
       // Hay un ejemplo en admin/edit/price y en /prices.
+      
     }
   }
 };
