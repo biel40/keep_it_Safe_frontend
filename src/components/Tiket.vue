@@ -4,7 +4,7 @@
     <p class="text-primary text-h4 text-center q-mt-lg q-mb-md">Keep it Safe</p>
     <p class="text-weight-bolder text-h6 q-mt-xl text-center">
       Le atendío
-      <span class="text-weight-light">{{user.name}} {{user.surnames}}</span>
+      <span v-if="user" class="text-weight-light">{{user.name}} {{user.surnames}}</span>
     </p>
     <div v-for="luggage in luggages" :key="luggage.luggage_type" class="text-h6 q-mt-xl">
       <div v-if="luggage.count > 0" class="flex no-wrp justify-between">

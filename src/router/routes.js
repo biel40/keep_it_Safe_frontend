@@ -18,22 +18,6 @@ const routes = [
       { path: 'admin/invoice/edit', component: () => import('pages/Commond/EditInvoice.vue') },
       
     ],
-    beforeEnter: (to, from, next) => {
-      
-      /* let bool = vue.$classes.Utils.secureRoutes();
-
-      console.log(bool);
-
-      if(!bool) {
-        localStorage.clear();
-        next('/price');
-      } else {
-        next();
-      } */
-
-      next();
-      
-    }
   }
 ]
 

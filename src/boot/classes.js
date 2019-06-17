@@ -49,7 +49,8 @@ export default ({
     },
      Utils: {
       verifyTokenSignature: function (token, user) {
-        axios
+        if(token && user ){
+          axios
           .post("http://localhost:8081/token/verify", token)
           .then(response => {
             localStorage.clear();
@@ -71,11 +72,11 @@ export default ({
             localStorage.setItem('token', token);
 
 
-            if (user.rol === "CLIENT") {
+            if (user.rol_user === "CLIENT") {
               router.push('/price');
-            } else if (user.rol === "EMPLOYEE") {
+            } else if (user.rol_user === "EMPLOYEE") {
               router.push('/employee/invoice/check-in');
-            } else if (user.rol === "ADMIN") {
+            } else if (user.rol_user === "ADMIN") {
               router.push('/admin/price/edit');
             }
           })
@@ -84,21 +85,10 @@ export default ({
 
             localStorage.clear();
           });
-      },
-
-      secureRoutes() {
-
-        let token = localStorage.getItem('token');
-        let user  = localStorage.getItem('user');
-
-        if(!token) {
-
-          localStorage.clear();
-          return false;
-
         } else {
-          this.verifyTokenSignature(token, user);
+          router.push("/price");
         }
+        
       }
     }
   }

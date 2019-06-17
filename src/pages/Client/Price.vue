@@ -45,6 +45,12 @@ export default {
   name: "Price",
   components: {
     ClientComments
+  },
+  created() {
+    this.$classes.Utils.verifyTokenSignature(
+        localStorage.getItem("token"),
+        JSON.parse(localStorage.getItem("user"))
+    );
   }
 };
 </script>
