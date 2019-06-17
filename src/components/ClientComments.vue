@@ -91,8 +91,6 @@ export default {
             if (user != null && comment.user != null && comment.user.email == currentUserEmail) {
               commentObj.isThisUserComment = true;
             } else commentObj.isThisUserComment = false;
-            
-            console.log(commentObj);
 
             this.comments.push(commentObj);
 
