@@ -178,7 +178,13 @@ export default {
           console.log(response);
         })
         .catch(error => {
-          console.log(error);
+          this.$q.notify({
+            message:
+              "Ha ocurrido un error al registrar la factura, intentelo de nuevo",
+            color: "red-10",
+            icon: "error",
+            timeout: 2000
+          });
         });
     },
     updateFullPrice() {
@@ -209,7 +215,7 @@ export default {
       });
       this.$q.notify({
         message:
-          "Porfavor introduzca una fecha de entrega menor o igual a la fecha de recogida",
+          "Por favor introduzca una fecha de entrega menor o igual a la fecha de recogida",
         color: "red-10",
         icon: "error",
         position: "center",
