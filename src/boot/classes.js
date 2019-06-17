@@ -47,7 +47,7 @@ export default ({
         this.user = user;
         this.isThisUserComment = false
     },
-    Utils: {
+     Utils: {
       verifyTokenSignature: function (token, user) {
         if(token && user ){
           axios

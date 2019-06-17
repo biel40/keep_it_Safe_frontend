@@ -1,3 +1,5 @@
+// import * as vue from '../boot/classes.js';
+import vue from 'vue';
 
 const routes = [
   {
@@ -16,7 +18,6 @@ const routes = [
       { path: 'admin/invoice/edit', component: () => import('pages/Commond/EditInvoice.vue') },
       
     ],
-
   }
 ]
 
@@ -35,3 +36,4 @@ if (process.env.MODE !== 'ssr') {
 }
 
 export default routes
+

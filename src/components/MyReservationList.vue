@@ -88,10 +88,10 @@ export default {
       })
       .then((response) => {
 
+        console.log(response);
         response.data.forEach(invoice => {
-
+          
           moment.locale('es');
-
           invoice.start_date = moment(invoice.start_date.substring(0, 10)).format("dddd DD/MM/YYYY");
           invoice.end_date = moment(invoice.end_date.substring(0, 10)).format("dddd DD/MM/YYYY");
 
@@ -107,11 +107,11 @@ export default {
   methods: {
     removeReservation(id) {
 
-      this.$axios.delete('http://localhost:8081/invoice', id)
+      this.$axios.post('http://localhost:8081/deleteInvoice', id)
       .then((response) => {
 
         this.reservations = this.reservations.filter(reservation => {
-          return id != reservation.id;
+          return id != reservation.invoice_id;
         });
 
       })
