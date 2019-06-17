@@ -55,7 +55,7 @@
         </q-item>
       </q-toolbar>
 
-      <q-tabs v-if="user.rol === 'CLIENT'" align="left" inline-label indicator-color="black">
+      <q-tabs v-if="user.rol_user === 'CLIENT'" align="left" inline-label indicator-color="black">
         <q-route-tab icon="mdi-currency-eur" to="/price" label="Precios" active-class="text-black"/>
         <q-route-tab icon="mdi-calendar" to="/schedule" label="Horario" active-class="text-black"/>
         <q-route-tab
@@ -67,7 +67,7 @@
         />
       </q-tabs>
 
-      <q-tabs v-if="user.rol === 'EMPLOYEE'" align="left" inline-label indicator-color="black">
+      <q-tabs v-if="user.rol_user === 'EMPLOYEE'" align="left" inline-label indicator-color="black">
         <q-route-tab
           icon="mdi-briefcase-check"
           to="/employee/invoice/check-in"
@@ -88,7 +88,7 @@
         />
       </q-tabs>
 
-      <q-tabs v-if="user.rol === 'ADMIN'" align="left" inline-label indicator-color="black">
+      <q-tabs v-if="user.rol_user === 'ADMIN'" align="left" inline-label indicator-color="black">
         <q-route-tab
           icon="mdi-file-document-edit"
           to="/admin/price/edit"
@@ -138,7 +138,7 @@ export default {
       user: {
         name: "Accede!",
         surnames: "",
-        rol: "CLIENT",
+        rol_user: "CLIENT",
         imageUrl: null,
         isLoginUser: false
       },
@@ -164,7 +164,7 @@ export default {
 
       this.user.name = "Accede!";
       this.user.surnames = "";
-      this.user.rol = "CLIENT";
+      this.user.rol_user = "CLIENT";
       this.user.imageUrl = null;
       this.user.isLoginUser = false;
 
