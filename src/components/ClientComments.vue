@@ -91,8 +91,6 @@ export default {
             if (user != null && comment.user != null && comment.user.email == currentUserEmail) {
               commentObj.isThisUserComment = true;
             } else commentObj.isThisUserComment = false;
-            
-            console.log(commentObj);
 
             this.comments.push(commentObj);
 
@@ -117,9 +115,6 @@ export default {
 
       this.$axios.post('http://localhost:8081/comments', this.commentToSend)
       .then(response => {
-          console.log("enviando");
-          console.log(this.commentToSend);
-
           this.comments.push(this.commentToSend);
           this.inputModel = '',
           this.scrolling()

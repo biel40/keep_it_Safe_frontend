@@ -25,7 +25,8 @@ export default ({
         },
         this.count = 0
     },
-    Client: function (rol_user, email, name, surnames ) {
+    Client: function (userId, rol_user, email, name, surnames ) {
+      this.userId = userId;
       this.rol_user = rol_user
       this.email = email;
       this.name = name
@@ -53,25 +54,21 @@ export default ({
           .then(response => {
             localStorage.clear();
 
-            // Recibiremos el JSON con la información deserializada.
-            console.log("User Logged: ", user);
-
             let userToken = JSON.parse(response.data[0]);
             let token = response.data[1];
 
             console.log(userToken.email);
             
+            user.userId = userToken.userId;
             user.email = userToken.email;
             user.name = userToken.name;
             user.surnames = userToken.surnames;
-            user.rol = userToken.rol;
+            user.rol_user = userToken.rol_user;
             user.imageUrl = userToken.imageUrl;
             user.isLoginUser = true;
 
             localStorage.setItem("user", JSON.stringify(user));
             localStorage.setItem('token', token);
-
-            console.log("Token added to local storage = " + token);
 
 
             if (user.rol === "CLIENT") {
