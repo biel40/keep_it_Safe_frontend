@@ -47,7 +47,7 @@ export default ({
         this.user = user;
         this.isThisUserComment = false
     },
-    Utils: {
+     Utils: {
       verifyTokenSignature: function (token, user) {
         axios
           .post("http://localhost:8081/token/verify", token)
@@ -84,6 +84,21 @@ export default ({
 
             localStorage.clear();
           });
+      },
+
+      secureRoutes() {
+
+        let token = localStorage.getItem('token');
+        let user  = localStorage.getItem('user');
+
+        if(!token) {
+
+          localStorage.clear();
+          return false;
+
+        } else {
+          this.verifyTokenSignature(token, user);
+        }
       }
     }
   }

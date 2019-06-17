@@ -1,3 +1,5 @@
+// import * as vue from '../boot/classes.js';
+import vue from 'vue';
 
 const routes = [
   {
@@ -15,7 +17,23 @@ const routes = [
       { path: 'admin/price/edit', component: () => import('pages/Admin/EditPrices.vue') },
       { path: 'admin/invoice/edit', component: () => import('pages/Commond/EditInvoice.vue') },
       
-    ]
+    ],
+    beforeEnter: (to, from, next) => {
+      
+      /* let bool = vue.$classes.Utils.secureRoutes();
+
+      console.log(bool);
+
+      if(!bool) {
+        localStorage.clear();
+        next('/price');
+      } else {
+        next();
+      } */
+
+      next();
+      
+    }
   }
 ]
 
@@ -34,3 +52,4 @@ if (process.env.MODE !== 'ssr') {
 }
 
 export default routes
+
