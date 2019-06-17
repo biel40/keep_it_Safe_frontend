@@ -15,7 +15,8 @@ const routes = [
       { path: 'admin/price/edit', component: () => import('pages/Admin/EditPrices.vue') },
       { path: 'admin/invoice/edit', component: () => import('pages/Commond/EditInvoice.vue') },
       
-    ]
+    ],
+
   }
 ]
 

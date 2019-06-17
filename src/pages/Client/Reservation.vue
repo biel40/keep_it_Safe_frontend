@@ -43,7 +43,12 @@ export default {
       ]
     };
   },
-  methods: {},
+  created() {
+    this.$classes.Utils.verifyTokenSignature(
+        localStorage.getItem("token"),
+        JSON.parse(localStorage.getItem("user"))
+    );
+  },
   components: {
     ClientComments,
     InvoiceForm

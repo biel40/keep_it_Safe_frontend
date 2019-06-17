@@ -76,6 +76,11 @@ export default {
     }
   }, 
   created(){
+    this.$classes.Utils.verifyTokenSignature(
+        localStorage.getItem("token"),
+        JSON.parse(localStorage.getItem("user"))
+    );
+
     this.$axios
         .get("http://localhost:8081/invoices")
         .then(response => {

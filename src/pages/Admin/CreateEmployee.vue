@@ -17,6 +17,12 @@ export default {
       confirmPassword: ""
     };
   },
+  created(){
+    this.$classes.Utils.verifyTokenSignature(
+        localStorage.getItem("token"),
+        JSON.parse(localStorage.getItem("user"))
+    );
+  },
   components:{
     RegisterForm
   }

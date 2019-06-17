@@ -16,7 +16,6 @@
 </style>
 
 <script>
-
 import InvoiceForm from "../../components/InvoiceForm.vue";
 import Tiket from "../../components/Tiket.vue";
 export default {
@@ -36,9 +35,14 @@ export default {
     this.invoice = this.$refs.invoice.getInvoice();
     this.luggages = this.$refs.invoice.getLuggages();
   },
-  created(){
-    this.user =JSON.parse(localStorage.getItem("user")) ;
+  beforeCreate() {
+    this.$classes.Utils.verifyTokenSignature(
+      localStorage.getItem("token"),
+      JSON.parse(localStorage.getItem("user"))
+    );
+  },
+  created() {
+    this.user = JSON.parse(localStorage.getItem("user"));
   }
 };
-
 </script>

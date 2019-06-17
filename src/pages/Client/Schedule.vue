@@ -49,6 +49,12 @@ export default {
       markers:[],
     };
   },
+  created() {
+    this.$classes.Utils.verifyTokenSignature(
+        localStorage.getItem("token"),
+        JSON.parse(localStorage.getItem("user"))
+    );
+  },
   mounted(){
     this.markers.push({ position: this.KeepItSafePosition});
   },

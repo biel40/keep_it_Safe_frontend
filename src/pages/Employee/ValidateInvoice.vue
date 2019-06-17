@@ -26,6 +26,12 @@ export default {
       luggages: null
     };
   },
+  created() {
+    this.$classes.Utils.verifyTokenSignature(
+        localStorage.getItem("token"),
+        JSON.parse(localStorage.getItem("user"))
+    );
+  },
   components: {
     InvoiceForm,
     Tiket
