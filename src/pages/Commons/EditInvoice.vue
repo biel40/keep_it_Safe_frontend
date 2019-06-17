@@ -39,13 +39,22 @@
       <q-card-section class="scroll">
         <q-list>
           <q-item v-for="invoice in invoices" :key="invoice.invoice_id" clickable v-ripple>
+
             Identificador: {{invoice.invoice_id}}
             <q-btn class="q-pa-md" icon="event" />
+
             <div class="column">
               {{invoice.start_date}} hasta {{invoice.end_date}}
             </div>
-            {{invoice.luggages | filtro}}
-            {{}}
+
+            <div v-for="luggageType in luggageTypes" :key="luggageType.luggage_id">
+              <br>
+              {{ luggageTypes | filtroCantidad(luggageTypes, invoice.luggages) }}
+              x
+              {{luggageType.luggage_type}} 
+
+            </div>
+
           </q-item>
         </q-list>
       </q-card-section>
@@ -62,7 +71,8 @@ export default {
     return {
       visible: false,
       date: "",
-      invoices: []
+      invoices: [],
+      luggageTypes: []
     };
   },
   methods: {
@@ -71,10 +81,22 @@ export default {
     }
   }, 
   created() {
+
     this.$classes.Utils.verifyTokenSignature(
         localStorage.getItem("token"),
         JSON.parse(localStorage.getItem("user"))
     );
+
+    this.luggageTypes = this.$axios
+    .get('http://localhost:8081/luggages')
+    .then(response => {
+        this.luggageTypes = response.data;
+        console.log("Luggage Types", this.luggageTypes);
+    })
+    .catch(error => {
+      console.log(error)
+    })
+    
 
     let user = JSON.parse(localStorage.getItem('user'));
 
@@ -92,7 +114,6 @@ export default {
             invoice.start_date = moment(invoice.start_date.substring(0, 10)).format("dddd DD/MM/YYYY");
             invoice.end_date = moment(invoice.end_date.substring(0, 10)).format("dddd DD/MM/YYYY");
               
-
             this.invoices.push(invoice);
           });
 
@@ -119,11 +140,37 @@ export default {
     
   },
   filters:{
-    filtro(luggages) {
-      // Cuando haces return en el filtro es lo que se pintará en la vista.
-      // En el created, guardar en una variable reactiva los tres tipos de maletas, que se pillan del Servidor.
-      // Hay un ejemplo en admin/edit/price y en /prices.
+    filtroCantidad(luggagesArray, luggagesInInvoice) {
+
+      console.log("FILTRO LUGGAGES --->", luggagesArray);
+      console.log("Luggages in current Invoice --> " , luggagesInInvoice);
+
+      let cantidad = 0;
+
+      luggagesArray.forEach(luggage => {
+
+        cantidad = 0;
+
+        let luggageType = luggage.luggage_type;
+
+        //FIXME: CREO QUE YA ESTÁ SOLUCIONADO
+        luggagesInInvoice.forEach(luggageInInvoice => {
+          // Si el tipo de la maleta que hay en la factura y el tipo de maleta concreto
+          // que estamos revisando actualmente coinciden, entonces incrementamos la cantidad en una unidad.
+          if (luggageInInvoice.luggage_type == luggageType) {
+            cantidad++;
+            console.log("Incrementando Cantidad");
+          }
+
+        });
+
+       
+
+      });
       
+       console.log("Cantidad -->", cantidad);
+      return cantidad;
+
     }
   }
 };
