@@ -114,7 +114,7 @@
       <LoginCard :user="user"/>
     </q-dialog>
     <q-dialog v-model="miAccountDialog" transition-show="slide-down">
-      <MyAccountCard user="Object with user"/>
+      <my-account-card :user="user"/>
     </q-dialog>
     <q-dialog v-model="myReservationsDialog" transition-show="slide-down">
       <MyReservationList/>
