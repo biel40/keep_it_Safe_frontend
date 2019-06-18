@@ -25,12 +25,13 @@ export default ({
         },
         this.count = 0
     },
-    User: function (userId, rol_user, email, name, surnames ) {
-      this.userId = userId;
+    User: function (user_id, rol_user, email, name, surnames, userLoginSocial ) {
+      this.user_id = user_id;
       this.rol_user = rol_user
       this.email = email;
       this.name = name
       this.surnames = surnames
+      this.userLoginSocial =  userLoginSocial
     },
     Invoice: function (invoice_id, end_date, start_date, total_price, user, luggages, verified) {
       this.invoice_id = invoice_id;
@@ -47,7 +48,7 @@ export default ({
         this.user = user;
         this.isThisUserComment = false
     },
-     Utils: {
+    Utils: {
       verifyTokenSignature: function (token, user) {
         if(token && user ){
           axios
@@ -65,6 +66,7 @@ export default ({
             user.rol_user = userToken.rol_user;
             user.imageUrl = userToken.imageUrl;
             user.isLoginUser = true;
+            user.userLoginSocial = userToken.userLoginSocial;
 
             localStorage.setItem("user", JSON.stringify(user));
             localStorage.setItem('token', token);
@@ -83,7 +85,6 @@ export default ({
         
       },
       verifyAccesPath: function (user) {
-        console.log(user);
         let allowPaths = [
           {
             rol_user: "CLIENT",
@@ -126,7 +127,7 @@ export default ({
           case "EMPLOYEE":
             return "/employee/invoice/check-in"  
           case "ADMIN":
-            return "/admin/user/create"
+            return "/admin/price/edit"
           case "DEFAULT":
               return "/price"  
         }

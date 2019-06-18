@@ -79,21 +79,11 @@ export default {
     let userParsed = JSON.parse(localStorage.getItem("user"));
     console.log(userParsed);
 
-    let user = new this.$classes.User(
-      userParsed.userId,
-      userParsed.rol_user,
-      userParsed.email,
-      userParsed.name,
-      userParsed.surnames
-    );
-    console.log(user);
+    let userID = userParsed.userId;
+    console.log(userID);
 
     this.$axios
-      .get("http://localhost:8081/invoice/user/notVerified", {
-        params: {
-          string: user
-        }
-      })
+      .get("http://localhost:8081/invoice/user/notVerified/" +  userID)
       .then(response => {
         console.log(response);
         response.data.forEach(invoice => {
