@@ -37,22 +37,61 @@
     </div>
     <q-card>
       <q-card-section class="scroll">
-        <q-list>
-          <q-item v-for="invoice in invoices" :key="invoice.invoice_id" clickable v-ripple>
+        <q-list separator>
+          <q-item v-for="invoice in invoices" :key="invoice.invoice_id" class="flex-row items-center justify-around">
 
-            Identificador: {{invoice.invoice_id}}
-            <q-btn class="q-pa-md" icon="event" />
-
-            <div class="column">
-              {{invoice.start_date}} hasta {{invoice.end_date}}
+            <div class="flex column items-center">
+              <span style="font-weight: bold;"> Identificador de reserva </span>
+              <span> {{invoice.invoice_id}} </span>
+            </div>
+              
+            <div>
+              <q-icon size="40px" name="calendar_today" />
             </div>
 
-            <div v-for="luggageType in luggageTypes" :key="luggageType.luggage_id">
-              <br>
-              {{ luggageTypes | filtroCantidad(luggageTypes, invoice.luggages) }}
-              x
-              {{luggageType.luggage_type}} 
+            <div class="flex column items-center">
+              <span style="font-weight: bold;"> Fechas de reserva </span>
+              <div>
+                {{invoice.start_date}}
+              </div>
 
+              <span style="font-weight: bold;"> hasta  </span>
+
+              <div>
+                {{invoice.end_date}}
+              </div>
+              
+            </div>
+
+            <div class="flex column items-center">
+              <span style="font-weight: bold;"> Maletas </span>
+              <div class="justify-between">
+                <div v-for="luggageType in luggageTypes" :key="luggageType.luggage_id"> 
+                  {{ luggageType | filtroCantidad(invoice.luggages) }}
+                  x
+                  {{ luggageType.getFullName() }} 
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <q-icon name="perm_identity" size="60px" />
+            </div>
+
+            <div class="flex column items-center">
+              <span style="font-weight: bold;"> E-mail </span> 
+              <span> {{invoice.user.email}} </span>
+            </div>
+
+            <div>
+              <q-icon size="40px" name="euro_symbol" />
+            </div>
+            <div>
+              <b>Precio:</b> {{invoice.total_price | addDigit() }} €
+            </div>
+
+            <div>
+              <q-btn color="primary" label="Edita!" icon="edit"  />
             </div>
 
           </q-item>
@@ -87,11 +126,18 @@ export default {
         JSON.parse(localStorage.getItem("user"))
     );
 
-    this.luggageTypes = this.$axios
+    
+    this.$axios
     .get('http://localhost:8081/luggages')
     .then(response => {
-        this.luggageTypes = response.data;
-        console.log("Luggage Types", this.luggageTypes);
+
+        response.data.forEach(luggageTypeInArray => {
+
+          let luggageTypeReactive = new this.$classes.Luggage(luggageTypeInArray.luggage_type);
+
+          this.luggageTypes.push(luggageTypeReactive);
+        });
+
     })
     .catch(error => {
       console.log(error)
@@ -109,12 +155,13 @@ export default {
 
           invoices.forEach(invoice => {
 
+      
             moment.locale('es');
-
             invoice.start_date = moment(invoice.start_date.substring(0, 10)).format("dddd DD/MM/YYYY");
             invoice.end_date = moment(invoice.end_date.substring(0, 10)).format("dddd DD/MM/YYYY");
-              
+            
             this.invoices.push(invoice);
+
           });
 
         })
@@ -129,7 +176,13 @@ export default {
           let invoices = response.data;
 
           invoices.forEach(invoice => {
+            
+            moment.locale('es');
+            invoice.start_date = moment(invoice.start_date.substring(0, 10)).format("dddd DD/MM/YYYY");
+            invoice.end_date = moment(invoice.end_date.substring(0, 10)).format("dddd DD/MM/YYYY");
+
             this.invoices.push(invoice);
+
           });
 
         })
@@ -140,37 +193,26 @@ export default {
     
   },
   filters:{
-    filtroCantidad(luggagesArray, luggagesInInvoice) {
+    filtroCantidad(luggageType, luggagesInInvoice)  {
+      
 
-      console.log("FILTRO LUGGAGES --->", luggagesArray);
+      console.log("FILTRO LUGGAGES, current luggage type --->", luggageType);
       console.log("Luggages in current Invoice --> " , luggagesInInvoice);
 
-      let cantidad = 0;
+      // Pasarle atributo por atributo?
+      let luggageTypeString = luggageType.luggage_type;
 
-      luggagesArray.forEach(luggage => {
-
-        cantidad = 0;
-
-        let luggageType = luggage.luggage_type;
-
-        //FIXME: CREO QUE YA ESTÁ SOLUCIONADO
-        luggagesInInvoice.forEach(luggageInInvoice => {
-          // Si el tipo de la maleta que hay en la factura y el tipo de maleta concreto
-          // que estamos revisando actualmente coinciden, entonces incrementamos la cantidad en una unidad.
-          if (luggageInInvoice.luggage_type == luggageType) {
-            cantidad++;
-            console.log("Incrementando Cantidad");
-          }
-
-        });
-
-       
-
+      let arrayFiltrado = luggagesInInvoice.filter(luggageInInvoice => {
+        return luggageInInvoice.luggage_type == luggageTypeString;
       });
       
-       console.log("Cantidad -->", cantidad);
-      return cantidad;
+      console.log("Cantidad -->", arrayFiltrado.length);
 
+      return arrayFiltrado.length;
+
+    },
+    addDigit(precio) {
+      return precio.toFixed(2);
     }
   }
 };
