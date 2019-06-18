@@ -79,7 +79,7 @@ export default {
     let userParsed = JSON.parse(localStorage.getItem("user"));
     console.log(userParsed);
 
-    let user = new this.$classes.Client(
+    let user = new this.$classes.User(
       userParsed.userId,
       userParsed.rol_user,
       userParsed.email,
