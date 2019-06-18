@@ -40,7 +40,7 @@ export default {
             message:
               "Se han gardado los cambios correctamente",
             color: "primary",
-            icon: "error",
+            icon: "check",
             timeout: 2000
           });
         })
