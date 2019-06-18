@@ -51,8 +51,8 @@
       
       
       <q-card-section class="flex no-wrap items-center justify-between q-my-md">
-          <q-input class="col-11" style="width: 300px;" rounded outlined v-model="inputModel" label="Mensaje" />
-          <q-btn v-on:click="sendComment()" round color="primary" icon="send" />
+          <q-input v-on:keyup.enter="sendComment()" class="col-11" style="width: 300px;" rounded outlined v-model="inputModel" label="Mensaje" />
+          <q-btn v-on:click="sendComment()" round size="20px" color="primary" icon="send" />
       </q-card-section>
 
     </q-card>
@@ -60,6 +60,7 @@
 </template>
 
 <script>
+
 import { delay } from 'q';
 import { setTimeout } from 'timers';
 
@@ -105,6 +106,18 @@ export default {
 
       sendComment() {
 
+        // Comprobación para que no se introduzca una cadena vacía:
+        if(this.inputModel == "") {
+            this.$q.notify({
+            message: "Por favor, introduce un comentario válido.",
+            color: "negative",
+            icon: "error",
+            position: "right",
+            timeout: 1500
+          });
+          return;
+        }
+
         let user = JSON.parse(localStorage.getItem('user'));
 
         this.commentToSend = {
@@ -120,14 +133,21 @@ export default {
           this.scrolling()
       })
       .catch(error => {
-          console.log(error);
+          this.$q.notify({
+            message: "Ha ocurrido un error al enviar el comentario.",
+            color: "negative",
+            icon: "error",
+            position: "right",
+            timeout: 2000
+          });
       });
 
     },
     scrolling() {
       let scrollItem = document.querySelector('.scroll');
       scrollItem.scrollTop = scrollItem.scrollHeight;
-    }
+    },
+   
   },
   created() {
     this.getComments();
