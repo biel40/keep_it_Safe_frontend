@@ -5,10 +5,24 @@
       <div class="col-12 flex row no-wrap justify-between">
         <div class="col-5">
           <p class="formText">Correo electrónico</p>
-          <q-input 
-            class="q-mb-md" 
-            outlined v-model="Invoice.user.email" 
-            dense 
+          <q-input
+            v-if="isClientReservation"
+            disable
+            class="q-mb-md"
+            outlined
+            v-model="Invoice.user.email"
+            dense
+            type="email"
+            :error="$v.Invoice.user.email.$error"
+            @blur="$v.Invoice.user.email.$touch"
+            error-message="correo electrónico invalido"
+          />
+          <q-input
+            v-else
+            class="q-mb-md"
+            outlined
+            v-model="Invoice.user.email"
+            dense
             type="email"
             :error="$v.Invoice.user.email.$error"
             @blur="$v.Invoice.user.email.$touch"
@@ -98,7 +112,7 @@
 </template>
 
 <script>
-import moment from "../../node_modules/moment";
+import moment, { locale } from "../../node_modules/moment";
 import {
   required,
   minLength,
@@ -170,17 +184,47 @@ export default {
     createInvoice() {
       this.$v.$touch();
       if (this.$v.$error) return;
-      
+
+      if (this.Invoice.luggages.length == 0) {
+        this.$q.notify({
+          message: "Debe añadir almenos un tipo de equipaje",
+          color: "red-10",
+          icon: "error",
+          timeout: 3000
+        });
+
+        return;
+      }
+
+      if (this.isClientReservation) {
+        this.Invoice.verified = false;
+      } else {
+        this.Invoice.verified = true;
+      }
       console.log("El invocie que voy a enviar al seervuidor", this.Invoice);
       this.$axios
         .post("http://localhost:8081/invoice", this.Invoice)
         .then(response => {
-          console.log(response);
+          let message = "Se ha creado la factura correctamente";
+          if (this.isClientReservation) {
+            message = "Se ha creado la reserva correctamente";
+          }
+
+          this.$q.notify({
+            message: message,
+            color: "primary",
+            icon: "check",
+            timeout: 3000
+          });
         })
         .catch(error => {
+          let errorMessage = error.response.data;
+          if (!errorMessage) {
+            errorMessage =
+              "Ha ocurrido un error al registrar la factura, intentelo de nuevo";
+          }
           this.$q.notify({
-            message:
-              "Ha ocurrido un error al registrar la factura, intentelo de nuevo",
+            message: errorMessage,
             color: "red-10",
             icon: "error",
             timeout: 2000
@@ -205,7 +249,7 @@ export default {
       let start = moment(this.Invoice.start_date, "DD-MM-YYYY HH:mm");
       let end = moment(this.Invoice.end_date, "DD-MM-YYYY HH:mm");
       let duration = moment.duration(end.diff(start)).asDays();
-      duration ++;
+      duration++;
       return duration;
     },
     sowErrorDay() {
@@ -241,6 +285,10 @@ export default {
     this.Invoice.start_date = this.moment.format("DD-MM-YYYY");
     this.Invoice.end_date = this.moment.format("DD-MM-YYYY");
 
+    if (this.isClientReservation) {
+      this.Invoice.user.email = JSON.parse(localStorage.getItem("user")).email;
+    }
+
     this.$axios
       .get("http://localhost:8081/luggages")
       .then(response => {
@@ -261,18 +309,17 @@ export default {
         console.log(error);
       });
   },
-  props: ["title"],
-    validations:{
-        Invoice: {
-          user: {
-            email:{
-              required,
-              email 
-            }
-          },
-          }
-        },
-      
+  props: { title: String, isClientReservation: Boolean },
+  validations: {
+    Invoice: {
+      user: {
+        email: {
+          required,
+          email
+        }
+      }
+    }
+  }
 };
 </script>
 
