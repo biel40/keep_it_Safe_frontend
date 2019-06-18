@@ -25,7 +25,7 @@ export default ({
         },
         this.count = 0
     },
-    Client: function (userId, rol_user, email, name, surnames ) {
+    User: function (userId, rol_user, email, name, surnames ) {
       this.userId = userId;
       this.rol_user = rol_user
       this.email = email;

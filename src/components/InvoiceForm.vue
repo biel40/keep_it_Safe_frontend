@@ -278,7 +278,8 @@ export default {
   },
   created() {
     let invoice = new this.$classes.Invoice();
-    invoice.user = new this.$classes.Client("CLIENT");
+    invoice.user = new this.$classes.User();
+    
     this.Invoice = invoice;
 
     this.moment = moment();
