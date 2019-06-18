@@ -11,13 +11,11 @@
   </q-page>
 </template>
 
-
-<style>
-</style>
-
 <script>
+
 import InvoiceForm from "../../components/InvoiceForm.vue";
 import Tiket from "../../components/Tiket.vue";
+
 export default {
   name: "ValidateInvoice",
   data() {

@@ -1,11 +1,11 @@
-// import * as vue from '../boot/classes.js';
+
 import vue from 'vue';
 
 const routes = [
   {
     path: '',
     redirect: '/price',
-    component: () => import('layouts/ClientHeader.vue'),
+    component: () => import('layouts/LayoutHeader.vue'),
     children: [
       { path: 'price', component: () => import('pages/Client/Price.vue') },
       { path: 'reservation', component: () => import('pages/Client/Reservation.vue') },

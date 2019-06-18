@@ -1,6 +1,6 @@
 <template>
   <div class="flex column">
-    <p class="text-primary header">{{title}}</p>
+    <p class="text-primary header"> {{title}} </p>
     <div class="flex column no-wrap">
       <div class="col-12 flex row no-wrap justify-between">
         <div class="col-5">
@@ -75,12 +75,13 @@
 
     <p class="formText">Tipo de equipaje</p>
     <q-list padding class="rounded-borders text-primary text-h6 q-mb-md">
+
       <q-item
         class="flex row no-wrap justify-between items-center ç"
         v-for="luggage in luggages"
         :key="luggage.type"
       >
-        <span>Equipaje {{luggage.getFullName()}}</span>
+        <span> Equipaje {{luggage.getFullName()}} </span>
         <div class="text-h6 flex column no-wrap items-center">
           <div class="q-mb-xs">
             <span class="text-center">Cantidad</span>
@@ -94,7 +95,8 @@
               round
               @click="removeLuggage(luggage.luggage_type)"
             />
-            {{luggage.count}}
+            {{ luggage.count }}
+
             <q-btn
               dense
               color="green-9"
@@ -107,11 +109,16 @@
         </div>
       </q-item>
     </q-list>
-    <q-btn color="primary" label="GENERAR FACTURA" @click="createInvoice"/>
+
+    <q-btn v-if="!this.isInvoiceEditing" color="primary" label="GENERAR FACTURA" @click="createInvoice"/>
+    
+    <q-btn v-else color="primary" label="EDITAR LA FACTURA" @click="createInvoice"/>
+
   </div>
 </template>
 
 <script>
+
 import moment, { locale } from "../../node_modules/moment";
 import {
   required,
@@ -120,6 +127,7 @@ import {
   sameAs,
   email
 } from "vuelidate/lib/validators";
+
 let Luggage = function(type, fullName) {
   this.type = type;
   this.count = 0;
@@ -131,6 +139,7 @@ export default {
     return {
       moment: null,
       Invoice: null,
+      isInvoiceEditing: false,
       InvoiceDate: {
         initDate: "",
         finishDate: ""
@@ -201,7 +210,6 @@ export default {
       } else {
         this.Invoice.verified = true;
       }
-      console.log("El invocie que voy a enviar al seervuidor", this.Invoice);
       this.$axios
         .post("http://localhost:8081/invoice", this.Invoice)
         .then(response => {
@@ -274,22 +282,17 @@ export default {
     },
     getInvoice() {
       return this.Invoice;
+    },
+    updateLuggageCounters() {
+
+      let invoicePropsLuggages = this.InvoiceProps.luggages;
+      
+
     }
   },
   created() {
-    let invoice = new this.$classes.Invoice();
-    invoice.user = new this.$classes.User();
-    
-    this.Invoice = invoice;
 
-    this.moment = moment();
-    this.Invoice.start_date = this.moment.format("DD-MM-YYYY");
-    this.Invoice.end_date = this.moment.format("DD-MM-YYYY");
-
-    if (this.isClientReservation) {
-      this.Invoice.user.email = JSON.parse(localStorage.getItem("user")).email;
-    }
-
+     // Esto se tiene que rellenar siempre:
     this.$axios
       .get("http://localhost:8081/luggages")
       .then(response => {
@@ -309,8 +312,34 @@ export default {
       .catch(error => {
         console.log(error);
       });
+      
+
+    if(this.InvoiceProps != null) {
+
+      this.Invoice = this.InvoiceProps;
+      this.updateLuggageCounters();
+
+      this.isInvoiceEditing = true;
+
+    } else {
+        
+      let invoice = new this.$classes.Invoice();
+      invoice.user = new this.$classes.User();
+      
+      this.Invoice = invoice;
+
+      this.moment = moment();
+      this.Invoice.start_date = this.moment.format("DD-MM-YYYY");
+      this.Invoice.end_date = this.moment.format("DD-MM-YYYY");
+
+      if (this.isClientReservation) {
+        this.Invoice.user.email = JSON.parse(localStorage.getItem("user")).email;
+      }
+
+    }
+    
   },
-  props: { title: String, isClientReservation: Boolean },
+  props: { title: String, isClientReservation: Boolean, InvoiceProps: Object },
   validations: {
     Invoice: {
       user: {

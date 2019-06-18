@@ -117,7 +117,7 @@
       <MyAccountCard user="Object with user"/>
     </q-dialog>
     <q-dialog v-model="myReservationsDialog" transition-show="slide-down">
-      <MyReservationList/>
+      <MyReservationList />
     </q-dialog>
 
     <q-page-container class="background-color-app">
@@ -127,6 +127,7 @@
 </template>
 
 <script>
+
 import LoginCard from "../components/LoginCard";
 import MyAccountCard from "../components/MyAccountCard";
 import MyReservationList from "../components/MyReservationList";

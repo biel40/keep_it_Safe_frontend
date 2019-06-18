@@ -20,11 +20,12 @@
         <div class="flex column no-wrap col-12 col-md text-h6">
           <div>
             Correo electrónico
-            <q-input type="email" outlined v-model="loginEmail" placeholder="demo@keepitsafe.com"/>
+            <q-input v-on:keyup.enter="doLogin" type="email" outlined v-model="loginEmail" placeholder="demo@keepitsafe.com"/>
           </div>
           <div>
             Contraseña
             <q-input
+              v-on:keyup.enter="doLogin"
               outlined
               type="password"
               v-model="loginPassword"
