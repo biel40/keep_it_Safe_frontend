@@ -38,7 +38,15 @@
           </q-avatar>
 
           <span class="text-h6">{{user.name}}</span>
-          <q-menu>
+          <q-menu v-if="user.userLoginSocial">
+            <q-list style="min-width: 100px">
+              <q-separator/>
+              <q-item clickable v-close-popup @click="logout">
+                <q-item-section>Cerrar sesión</q-item-section>
+              </q-item>
+            </q-list>
+          </q-menu>
+          <q-menu v-else>
             <q-list style="min-width: 100px">
               <q-item clickable v-close-popup @click="miAccountDialog=true">
                 <q-item-section>Mi cuenta</q-item-section>

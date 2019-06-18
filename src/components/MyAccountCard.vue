@@ -31,11 +31,38 @@
         <q-card-section class="row flex items-center justify-center q-mb-md">
           <div class="col-10 flex column">
             <div class="text-bold mi-account-label">Contraseña actual</div>
-            <q-input type="password" outlined v-model="oldPassword" dense/>
+            <q-input
+              type="password"
+              outlined
+              v-model="oldPassword"
+              dense
+              :error="$v.oldPassword.$error"
+              @blur="$v.oldPassword.$touch"
+              error-message="la contraseña debe tener minimo 8"
+              placeholder="obligatorio"
+            />
             <div class="text-bold mi-account-label">Nueva contraseña</div>
-            <q-input type="password" outlined v-model="newPassword" dense/>
+            <q-input
+              type="password"
+              outlined
+              v-model="newPassword"
+              dense
+              :error="$v.newPassword.$error"
+              @blur="$v.newPassword.$touch"
+              error-message="la contraseña debe tener minimo 8"
+              placeholder="obligatorio"
+            />
             <div class="text-bold mi-account-label">Repite contraseña</div>
-            <q-input type="password" outlined v-model="repeatNewPassword" dense/>
+            <q-input
+              type="password"
+              outlined
+              v-model="repeatNewPassword"
+              dense
+              :error="$v.repeatNewPassword.$error"
+              @blur="$v.repeatNewPassword.$touch"
+              error-message="las contraseñas no son iguales"
+              placeholder="obligatorio"
+            />
           </div>
         </q-card-section>
         <q-card-section class="flex column">
@@ -54,11 +81,36 @@
         <q-card-section class="row flex items-center justify-center q-mb-md">
           <div class="col-10 flex column">
             <div class="text-bold mi-account-label">Nombre</div>
-            <q-input type="text" outlined v-model="userEdit.name" dense/>
+            <q-input
+              type="text"
+              outlined
+              v-model="userEdit.name"
+              dense
+              :error="$v.userEdit.name.$error"
+              @blur="$v.userEdit.name.$touch"
+              placeholder="obligatorio"
+            />
             <div class="text-bold mi-account-label">Apellidos</div>
-            <q-input type="text" outlined v-model="userEdit.surnames" dense/>
+            <q-input
+              type="text"
+              outlined
+              v-model="userEdit.surnames"
+              dense
+              :error="$v.userEdit.surnames.$error"
+              @blur="$v.userEdit.surnames.$touch"
+              placeholder="obligatorio"
+            />
             <div class="text-bold mi-account-label">Correo electrónico</div>
-            <q-input type="email" outlined v-model="userEdit.email" dense/>
+            <q-input
+              type="email"
+              outlined
+              v-model="userEdit.email"
+              dense
+              :error="$v.userEdit.email.$error"
+              @blur="$v.userEdit.email.$touch"
+              error-message="correo electrónico invalido"
+              placeholder="obligatorio"
+            />
           </div>
         </q-card-section>
         <q-card-section class="flex column">
@@ -70,7 +122,7 @@
 </template>
 
 <script>
-import { locale } from 'moment';
+import { required, minLength, sameAs, email } from "vuelidate/lib/validators";
 export default {
   name: "MyAccountDialog",
   data() {
@@ -80,10 +132,6 @@ export default {
       oldPassword: "",
       newPassword: "",
       repeatNewPassword: "",
-      newName: "",
-      newSurname: "",
-      newSecondSurname: "",
-      newEmail: "",
       userEdit: null
     };
   },
@@ -94,32 +142,84 @@ export default {
       this.user.email,
       this.user.name,
       this.user.surnames
-		);
+    );
   },
   methods: {
     savePassword() {
-      alert("this is a example mola ehh");
+      this.$v.$touch();
+      if (this.$v.$error) return;
+      this.$axios
+        .put("http://localhost:8081/user/password", [
+          this.user.userId.toString(),
+          this.oldPassword,
+          this.newPassword
+        ])
+        .then(response => {
+          let data = response.data;
+          localStorage.clear();
+
+          localStorage.setItem("user", data[0]);
+          localStorage.setItem("token", data[1]);
+
+          window.location.reload();
+        })
+        .catch(error => {
+          this.$q.notify({
+            message: "Contraseña incorrecta, intententelo de nuevo",
+            color: "red-10",
+            icon: "error",
+            position: "center",
+            timeout: 2500
+          });
+        });
     },
     saveProfile() {
-			console.log("El usuario que voy a enviar -> ", this.userEdit);
+      console.log("El usuario que voy a enviar -> ", this.userEdit);
       this.$axios
-        .put("http://localhost:8081/user", this.userEdit)
+        .put("http://localhost:8081/user/profile", this.userEdit)
         .then(response => {
-					let data =  response.data
-					localStorage.clear();
+          let data = response.data;
+          localStorage.clear();
 
-					localStorage.setItem('user', data[0]);
-					localStorage.setItem('token', data[1]);
+          localStorage.setItem("user", data[0]);
+          localStorage.setItem("token", data[1]);
 
-					window.location.reload();
-					
+          window.location.reload();
         })
         .catch(error => {
           console.log(error);
         });
     }
   },
-  props: ["user"]
+  props: ["user"],
+  validations: {
+    userEdit: {
+      name: {
+        required
+      },
+      email: {
+        required,
+        email
+      },
+      surnames: {
+        required
+      }
+    },
+    oldPassword: {
+      required,
+      minLength: minLength(8)
+    },
+    newPassword: {
+      required,
+      minLength: minLength(8)
+    },
+    repeatNewPassword: {
+      required,
+      sameAs: sameAs(function() {
+        return this.newPassword;
+      })
+    }
+  }
 };
 </script>
 
