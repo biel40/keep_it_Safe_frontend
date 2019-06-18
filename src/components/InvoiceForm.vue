@@ -285,14 +285,12 @@ export default {
     },
     updateLuggageCounters() {
 
-      let invoicePropsLuggages = this.InvoiceProps.luggages;
-      
 
     }
   },
   created() {
 
-     // Esto se tiene que rellenar siempre:
+     // Esto se tiene que rellenar siempre
     this.$axios
       .get("http://localhost:8081/luggages")
       .then(response => {

@@ -149,6 +149,7 @@ export default {
       startDate: '',
       endDate: '',
       invoices: [],
+      invoicesFiltered: [],
       invoicesFilteredByEmail: [],
       invoicesFilteredByInvoiceId: [],
       invoicesFilteredByStartDate: [],
