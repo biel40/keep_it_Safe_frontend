@@ -315,7 +315,7 @@ export default {
     },
     updateFullPrice() {
       let duration = this.getDifferenceDays();
-      console.log(duration);
+  
       if (duration < 0) {
         this.sowErrorDay();
       } else {
@@ -384,7 +384,7 @@ export default {
       .get("http://localhost:8081/luggages")
       .then(response => {
         let luggages = response.data;
-        console.log("RESPONSE LUGAGE -> ", luggages);
+       
         this.luggageFind = [];
         luggages.forEach(luggage => {
           let lugg = new this.$classes.Luggage(
@@ -394,12 +394,8 @@ export default {
             luggage.price,
             luggage.width_dimension
           );
-          console.log("OBJETO CREADO --> ", lugg);
           this.luggages.push(lugg);
-          console.log("NO TIENE SENTIDO ->", this.luggages);
         });
-
-        console.log("BEFORE LUGAGE -> ", this.luggages);
 
         if (this.InvoiceProps != null) {
           this.updateLuggageCounters();

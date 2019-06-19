@@ -266,12 +266,10 @@ export default {
     filterByStartDate() {
     
       let modelToMoment = moment(this.startDate, "DD-MM-YYYY");
-      console.log(modelToMoment);
+
 
       this.invoicesFiltered = this.invoices.filter((invoice) => {
         let day = moment(invoice.start_date, "DD-MM-YYYY");
-        console.log(day)
-        console.log( moment(modelToMoment).isSameOrAfter(day, 'day'));
         return moment(day).isSameOrAfter(modelToMoment, 'day');
         
       })
