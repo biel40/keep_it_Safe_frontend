@@ -375,16 +375,6 @@ export default {
     if(this.InvoiceProps != null) {
 
       this.Invoice = this.InvoiceProps;
-<<<<<<< HEAD
-=======
-
-      // Reiniciamos las Luggages cuando entramos en modo edición.
-      this.Invoice.luggages = [];
-      this.Invoice.full_price = 0;
-
-      this.updateLuggageCounters();
-
->>>>>>> 4131cb7253f899d7d92417ec5d10eac0c41ffe04
       this.isInvoiceEditing = true;
       this.moment = moment();
 
