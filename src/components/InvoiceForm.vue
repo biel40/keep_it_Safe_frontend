@@ -53,7 +53,7 @@
       </div>
 
       <div class="flex column col-5">
-        <p class="formText">Día de Recogida</p>
+        <p class="formText"> Día de Recogida </p>
         <q-input outlined v-model="Invoice.end_date" dense label="Día" class="q-mb-lg">
           <template v-slot:append>
             <q-icon name="event" class="cursor-pointer">
@@ -112,7 +112,7 @@
 
     <q-btn v-if="!this.isInvoiceEditing" color="primary" label="GENERAR FACTURA" @click="createInvoice"/>
     
-    <q-btn v-else color="primary" label="EDITAR LA FACTURA" @click="createInvoice"/>
+    <q-btn v-else color="primary" label="EDITAR LA FACTURA" @click="editInvoice"/>
 
   </div>
 </template>
@@ -213,10 +213,12 @@ export default {
       this.$axios
         .post("http://localhost:8081/invoice", this.Invoice)
         .then(response => {
+
           let message = "Se ha creado la factura correctamente";
+
           if (this.isClientReservation) {
             message = "Se ha creado la reserva correctamente";
-          }
+          } 
 
           this.$q.notify({
             message: message,
@@ -239,8 +241,56 @@ export default {
           });
         });
     },
+    editInvoice() {
+      
+      this.$v.$touch();
+
+      if (this.$v.$error) return;
+
+      if (this.Invoice.luggages.length == 0) {
+        this.$q.notify({
+          message: "Debe añadir almenos un tipo de equipaje",
+          color: "red-10",
+          icon: "error",
+          timeout: 3000
+        });
+
+        return;
+      }
+
+      this.updateFullPrice();
+
+      this.$axios
+        .put("http://localhost:8081/invoices/edit", this.Invoice)
+        .then(response => {
+          
+          let message = "Se ha modificado la factura correctamente.";
+          this.$q.notify({
+            message: message,
+            color: "primary",
+            icon: "check",
+            timeout: 3000
+          });
+        })
+        .catch(error => {
+          let errorMessage = error.response.data;
+          if (!errorMessage) {
+            errorMessage =
+              "Ha ocurrido un error al registrar la factura, intentelo de nuevo";
+          }
+          this.$q.notify({
+            message: errorMessage,
+            color: "red-10",
+            icon: "error",
+            timeout: 2000
+          });
+        });
+
+
+    },
     updateFullPrice() {
       let duration = this.getDifferenceDays();
+
       if (duration < 0) {
         this.sowErrorDay();
       } else {
@@ -297,7 +347,7 @@ export default {
   },
   created() {
 
-     // Esto se tiene que rellenar siempre
+    // Esto se tiene que rellenar siempre
     this.$axios
       .get("http://localhost:8081/luggages")
       .then(response => {
@@ -325,7 +375,18 @@ export default {
     if(this.InvoiceProps != null) {
 
       this.Invoice = this.InvoiceProps;
+<<<<<<< HEAD
+=======
+
+      // Reiniciamos las Luggages cuando entramos en modo edición.
+      this.Invoice.luggages = [];
+      this.Invoice.full_price = 0;
+
+      this.updateLuggageCounters();
+
+>>>>>>> 4131cb7253f899d7d92417ec5d10eac0c41ffe04
       this.isInvoiceEditing = true;
+      this.moment = moment();
 
     } else {
         
