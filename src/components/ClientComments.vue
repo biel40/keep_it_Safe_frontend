@@ -22,7 +22,15 @@
             />
            
             <q-chat-message
-              v-if="comment.user && comment.user.imageUrl == 'null' "
+              v-if="comment.user && comment.user.imageUrl == 'null' && isThisUserComment "
+              :name="comment.user.name"
+              avatar="https://image.flaticon.com/icons/png/128/74/74472.png"
+              :text="[comment.comment_text]"
+              sent
+            />
+
+            <q-chat-message
+              v-if="comment.user && comment.user.imageUrl == 'null' && !isThisUserComment "
               :name="comment.user.name"
               avatar="https://image.flaticon.com/icons/png/128/74/74472.png"
               :text="[comment.comment_text]"
