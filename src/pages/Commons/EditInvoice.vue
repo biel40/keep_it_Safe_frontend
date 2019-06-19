@@ -14,7 +14,7 @@
               <q-input v-on:keyup="filterByInvoiceId()" v-model="invoiceIdModel" outlined dense class="input-search"></q-input>
             </div>
             <div class="row no-wrap justify-between">
-              <p class="q-mt-md q-mr-md"> Fecha Inicio: </p>
+              <p class="q-mt-md q-mr-md"> Fecha de partida: </p>
               <q-input v-on:keyup.enter="filterByStartDate()" v-on:change="filterByStartDate()" v-model="startDate" outlined dense class="input-search">
                 
                 <template v-slot:append>
@@ -33,24 +33,6 @@
               </q-input>
             </div>
 
-            <div class="row no-wrap justify-between">
-              <p class="q-mt-md q-mr-md"> Fecha Fin: </p>
-              <q-input v-on:keyup.enter="filterByEndDate()" v-on:change="filterByEndDate()" v-model="endDate" outlined dense class="input-search">
-                <template v-slot:append>
-                  <q-icon name="event" class="cursor-pointer">
-                    <q-popup-proxy ref="endDate">
-                      <q-date
-                        v-model="endDate"
-                        mask="DD-MM-YYYY"
-                        minimal
-                        today-btn
-                        @input="triggerEndDateFilter()"
-                      />
-                    </q-popup-proxy>
-                  </q-icon>
-                </template>
-              </q-input>
-            </div>
 
           </q-card-section>
         </q-card>
@@ -74,13 +56,13 @@
             <div class="flex column items-center">
               <span style="font-weight: bold;"> Fechas de reserva </span>
               <div>
-                {{ invoice.start_date | filterFormat }}
+                {{ invoice.start_date  }}
               </div>
 
               <span style="font-weight: bold;"> hasta  </span>
 
               <div>
-                {{ invoice.end_date | filterFormat }}
+                {{ invoice.end_date  }}
               </div>
               
             </div>
@@ -128,7 +110,7 @@
           <q-btn size="10px" icon="close" flat round dense v-close-popup />   
         </div>
 
-        <InvoiceForm v-bind:InvoiceProps.sync="this.invoiceToEdit" class="q-pa-xl" />
+        <InvoiceForm title="Editar factura" v-bind:InvoiceProps.sync="this.invoiceToEdit" class="q-pa-xl" />
 
       </q-card>
     </q-dialog>
@@ -150,10 +132,6 @@ export default {
       endDate: '',
       invoices: [],
       invoicesFiltered: [],
-      invoicesFilteredByEmail: [],
-      invoicesFilteredByInvoiceId: [],
-      invoicesFilteredByStartDate: [],
-      invoicesFilteredByEndDate: [],
       luggageTypes: [],
       editReservationDialog: false,
       invoiceToEdit: null,
@@ -192,11 +170,7 @@ export default {
           let invoices = response.data;
 
           invoices.forEach(invoice => {
-
-            let invoiceClassObject = new this.$classes.Invoice(invoice.invoice_id, invoice.end_date, invoice.start_date, invoice.total_price, invoice.user, invoice.luggages, invoice.verified);
-
-            this.invoices.push(invoiceClassObject);
-
+            this.saveInvoiceInArray(invoice);
           });
 
           this.invoicesFiltered = this.invoices;
@@ -213,11 +187,7 @@ export default {
           let invoices = response.data;
 
           invoices.forEach(invoice => {
-
-            let invoiceClassObject = new this.$classes.Invoice(invoice.invoice_id, invoice.end_date, invoice.start_date, invoice.total_price, invoice.user, invoice.luggages, invoice.verified);
-
-            this.invoices.push(invoiceClassObject);
-
+            this.saveInvoiceInArray(invoice);
           });
 
           this.invoicesFiltered = this.invoices;
@@ -227,6 +197,23 @@ export default {
           console.log(error);
         });
     } 
+    },
+    saveInvoiceInArray(invoice){
+      this.formatDay(invoice);
+      let invoiceClassObject = new this.$classes.Invoice(invoice.invoice_id, 
+      invoice.end_date, 
+      invoice.start_date, 
+      invoice.total_price, 
+      invoice.user, 
+      invoice.luggages, 
+      invoice.verified);
+      this.invoices.push(invoiceClassObject);
+    },
+    formatDay(invoice){
+      let start = moment(invoice.start_date);
+      invoice.start_date = start.format("DD-MM-YYYY");
+      let end = moment(invoice.end_date);
+      invoice.end_date = end.format("DD-MM-YYYY");
     },
     clickedEditButton(invoice) {
 
@@ -278,22 +265,15 @@ export default {
     }, 
     filterByStartDate() {
     
-      let modelToMoment = moment(this.startDate, "DD-MM-yyyy");
+      let modelToMoment = moment(this.startDate, "DD-MM-YYYY");
+      console.log(modelToMoment);
 
       this.invoicesFiltered = this.invoices.filter((invoice) => {
-        return moment(invoice.start_date).isSame(modelToMoment, 'day');
-      })
-
-      if(!this.invoicesFiltered || this.invoicesFiltered == "") {
-        this.invoicesFiltered = this.invoices;
-      }
-
-    },filterByEndDate() {
-    
-      let modelToMoment = moment(this.endDate, "DD-MM-yyyy");
-
-      this.invoicesFiltered = this.invoices.filter((invoice) => {
-        return moment(invoice.end_date).isSame(modelToMoment, 'day');
+        let day = moment(invoice.start_date, "DD-MM-YYYY");
+        console.log(day)
+        console.log( moment(modelToMoment).isSameOrAfter(day, 'day'));
+        return moment(day).isSameOrAfter(modelToMoment, 'day');
+        
       })
 
       if(!this.invoicesFiltered || this.invoicesFiltered == "") {
@@ -305,11 +285,6 @@ export default {
       this.filterByStartDate();
       this.$refs.startDate.hide();
     },
-    triggerEndDateFilter() {
-      this.filterByEndDate();
-      this.$refs.endDate.hide();
-    }
-  
   }, 
   created() {
     this.loadPage();
@@ -328,10 +303,6 @@ export default {
     },
     addDigit(precio) {
       return precio.toFixed(2);
-    },
-    filterFormat(dateToFilter) {
-      moment.locale('es');
-      return moment(dateToFilter.substring(0, 10)).format("dddd DD/MM/YYYY");
     }
   },
   components: {

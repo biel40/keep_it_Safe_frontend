@@ -49,7 +49,7 @@
               </q-item>
             </q-list>
           </q-menu>
-          <q-menu v-else>
+          <q-menu v-else-if="user.rol_user=='CLIENT'">
             <q-list style="min-width: 100px">
               <q-item clickable v-close-popup @click="miAccountDialog = true">
                 <q-item-section>Mi cuenta</q-item-section>
@@ -57,6 +57,14 @@
               <q-item clickable v-close-popup @click="myReservationsDialog = true">
                 <q-item-section>Mis reservas</q-item-section>
               </q-item>
+              <q-separator/>
+              <q-item clickable v-close-popup @click="logout">
+                <q-item-section>Cerrar sesión</q-item-section>
+              </q-item>
+            </q-list>
+          </q-menu>
+          <q-menu v-else-if="user.rol_user=='EMPLOYEE' || user.rol_user=='ADMIN'">
+            <q-list style="min-width: 100px">
               <q-separator/>
               <q-item clickable v-close-popup @click="logout">
                 <q-item-section>Cerrar sesión</q-item-section>

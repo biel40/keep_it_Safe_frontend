@@ -1,6 +1,6 @@
 <template>
   <div class="flex column">
-    <p class="text-primary header"> {{title}} </p>
+    <p class="text-primary header">{{title}}</p>
     <div class="flex column no-wrap">
       <div class="col-12 flex row no-wrap justify-between">
         <div class="col-5">
@@ -34,7 +34,7 @@
     <div class="flex row row justify-between">
       <div class="flex column col-5">
         <p class="formText">Día de Reserva</p>
-        <q-input outlined v-model="Invoice.start_date" dense label="Día" class="q-mb-lg">
+        <q-input v-if="isInvoiceEditing" outlined v-model="Invoice.start_date" dense label="Día" class="q-mb-lg">
           <template v-slot:append>
             <q-icon name="event" class="cursor-pointer">
               <q-popup-proxy ref="initDate">
@@ -43,7 +43,22 @@
                   mask="DD-MM-YYYY"
                   minimal
                   today-btn
+                  @input="closeDate('initDate')"
+                />
+              </q-popup-proxy>
+            </q-icon>
+          </template>
+        </q-input>
+        <q-input v-else outlined v-model="Invoice.start_date" dense label="Día" class="q-mb-lg">
+          <template v-slot:append>
+            <q-icon name="event" class="cursor-pointer">
+              <q-popup-proxy ref="initDate">
+                <q-date
+                  v-model="Invoice.start_date"
+                  mask="DD-MM-YYYY"
+                  minimal
                   :options="setAllowedDays"
+                  today-btn
                   @input="closeDate('initDate')"
                 />
               </q-popup-proxy>
@@ -53,8 +68,8 @@
       </div>
 
       <div class="flex column col-5">
-        <p class="formText"> Día de Recogida </p>
-        <q-input outlined v-model="Invoice.end_date" dense label="Día" class="q-mb-lg">
+        <p class="formText">Día de Recogida</p>
+        <q-input v-if="isInvoiceEditing" outlined v-model="Invoice.end_date" dense label="Día" class="q-mb-lg">
           <template v-slot:append>
             <q-icon name="event" class="cursor-pointer">
               <q-popup-proxy ref="finishDate">
@@ -63,7 +78,22 @@
                   mask="DD-MM-YYYY"
                   minimal
                   today-btn
+                  @input="closeDate('finishDate')"
+                />
+              </q-popup-proxy>
+            </q-icon>
+          </template>
+        </q-input>
+        <q-input v-else outlined v-model="Invoice.end_date" dense label="Día" class="q-mb-lg">
+          <template v-slot:append>
+            <q-icon name="event" class="cursor-pointer">
+              <q-popup-proxy ref="finishDate">
+                <q-date
+                  v-model="Invoice.end_date"
+                  mask="DD-MM-YYYY"
+                  minimal
                   :options="setAllowedDays"
+                  today-btn
                   @input="closeDate('finishDate')"
                 />
               </q-popup-proxy>
@@ -75,13 +105,12 @@
 
     <p class="formText">Tipo de equipaje</p>
     <q-list padding class="rounded-borders text-primary text-h6 q-mb-md">
-
       <q-item
         class="flex row no-wrap justify-between items-center ç"
         v-for="luggage in luggages"
-        :key="luggage.type"
+        :key="luggage.luggage_type"
       >
-        <span> Equipaje {{luggage.getFullName()}} </span>
+        <span>Equipaje {{luggage.getFullName()}}</span>
         <div class="text-h6 flex column no-wrap items-center">
           <div class="q-mb-xs">
             <span class="text-center">Cantidad</span>
@@ -95,8 +124,8 @@
               round
               @click="removeLuggage(luggage.luggage_type)"
             />
-            {{ luggage.count }}
 
+            {{ luggage.count }}
             <q-btn
               dense
               color="green-9"
@@ -110,15 +139,18 @@
       </q-item>
     </q-list>
 
-    <q-btn v-if="!this.isInvoiceEditing" color="primary" label="GENERAR FACTURA" @click="createInvoice"/>
-    
-    <q-btn v-else color="primary" label="EDITAR LA FACTURA" @click="editInvoice"/>
+    <q-btn
+      v-if="!this.isInvoiceEditing"
+      color="primary"
+      label="GENERAR FACTURA"
+      @click="createInvoice"
+    />
 
+    <q-btn v-else color="primary" label="EDITAR LA FACTURA" @click="editInvoice"/>
   </div>
 </template>
 
 <script>
-
 import moment, { locale } from "../../node_modules/moment";
 import {
   required,
@@ -213,12 +245,11 @@ export default {
       this.$axios
         .post("http://localhost:8081/invoice", this.Invoice)
         .then(response => {
-
           let message = "Se ha creado la factura correctamente";
 
           if (this.isClientReservation) {
             message = "Se ha creado la reserva correctamente";
-          } 
+          }
 
           this.$q.notify({
             message: message,
@@ -242,7 +273,6 @@ export default {
         });
     },
     editInvoice() {
-      
       this.$v.$touch();
 
       if (this.$v.$error) return;
@@ -258,12 +288,9 @@ export default {
         return;
       }
 
-      this.updateFullPrice();
-
       this.$axios
         .put("http://localhost:8081/invoices/edit", this.Invoice)
         .then(response => {
-          
           let message = "Se ha modificado la factura correctamente.";
           this.$q.notify({
             message: message,
@@ -285,12 +312,10 @@ export default {
             timeout: 2000
           });
         });
-
-
     },
     updateFullPrice() {
       let duration = this.getDifferenceDays();
-
+      console.log(duration);
       if (duration < 0) {
         this.sowErrorDay();
       } else {
@@ -306,12 +331,17 @@ export default {
     getDifferenceDays() {
       let start = moment(this.Invoice.start_date, "DD-MM-YYYY HH:mm");
       let end = moment(this.Invoice.end_date, "DD-MM-YYYY HH:mm");
-      let duration = moment.duration(end.diff(start)).asDays();
-      duration++;
-      return duration;
+      if (moment(start).isAfter(end)) {
+        this.sowErrorDay();
+      } else {
+        let duration = moment.duration(end.diff(start)).asDays();
+        duration++;
+        return duration;
+      }
     },
     sowErrorDay() {
       this.Invoice.total_price = 0;
+      this.Invoice.luggages = [];
       this.luggages.forEach(luggage => {
         luggage.count = 0;
       });
@@ -333,56 +363,60 @@ export default {
     getInvoice() {
       return this.Invoice;
     },
-    updateLuggageCounters(luggages) {
-      luggages.forEach(luggage=>{
-        let countLuggage = this.InvoiceProps.luggages.filter(lugg=>{
-          return luggage.luggage_type = lugg.luggage_type;
-        }).length
-        let luggageFind = this.findLuggage(luggage.luggage_type);
-        
-        luggageFind.count = countLuggage;
-      })
+    updateLuggageCounters() {
+      let count = 0;
+      this.luggages.forEach(luggage => {
+        let countLuggage = this.InvoiceProps.luggages.forEach(lugg => {
+          if (luggage.luggage_type == lugg.luggage_type) {
+            count++;
+          }
+        });
+        let luggageFound = this.findLuggage(luggage.luggage_type);
 
+        luggageFound.count = count;
+        count = 0;
+      });
     }
   },
   created() {
-
     // Esto se tiene que rellenar siempre
     this.$axios
       .get("http://localhost:8081/luggages")
       .then(response => {
         let luggages = response.data;
+        console.log("RESPONSE LUGAGE -> ", luggages);
+        this.luggageFind = [];
         luggages.forEach(luggage => {
-          this.luggages.push(
-            new this.$classes.Luggage(
-              luggage.luggage_type,
-              luggage.deep_dimension,
-              luggage.high_dimension,
-              luggage.price,
-              luggage.width_dimension
-            )
+          let lugg = new this.$classes.Luggage(
+            luggage.luggage_type,
+            luggage.deep_dimension,
+            luggage.high_dimension,
+            luggage.price,
+            luggage.width_dimension
           );
+          console.log("OBJETO CREADO --> ", lugg);
+          this.luggages.push(lugg);
+          console.log("NO TIENE SENTIDO ->", this.luggages);
         });
+
+        console.log("BEFORE LUGAGE -> ", this.luggages);
+
         if (this.InvoiceProps != null) {
-          this.updateLuggageCounters(this.luggages)
+          this.updateLuggageCounters();
         }
       })
       .catch(error => {
         console.log(error);
       });
-      
 
-    if(this.InvoiceProps != null) {
-
-      this.Invoice = this.InvoiceProps;
+    if (this.InvoiceProps != null) {
+      this.Invoice = JSON.parse(JSON.stringify(this.InvoiceProps));
       this.isInvoiceEditing = true;
       this.moment = moment();
-
     } else {
-        
       let invoice = new this.$classes.Invoice();
       invoice.user = new this.$classes.User();
-      
+
       this.Invoice = invoice;
 
       this.moment = moment();
@@ -390,11 +424,11 @@ export default {
       this.Invoice.end_date = this.moment.format("DD-MM-YYYY");
 
       if (this.isClientReservation) {
-        this.Invoice.user.email = JSON.parse(localStorage.getItem("user")).email;
+        this.Invoice.user.email = JSON.parse(
+          localStorage.getItem("user")
+        ).email;
       }
-
     }
-    
   },
   props: { title: String, isClientReservation: Boolean, InvoiceProps: Object },
   validations: {
