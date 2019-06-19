@@ -116,7 +116,7 @@ export default ({
 
         if(!findPathAllow){
           let path = this.getPathUser(user.rol_user);
-          console.log(path)
+  
           router.push(path);
         }
       },

@@ -16,8 +16,6 @@ export default ({
       configuration.headers.IsTheRequest = 'true';
     }
 
-    console.log("Added header Authorization to the Request");
-
     return configuration;
 
   }, function (error) {
@@ -37,8 +35,6 @@ export default ({
 
   }, function (error) {
     if (error.response.status === 401) {
-      //TODO variable isUserLogin not work
-      console.log('Unauthorized response');
       localStorage.clear();
       router.push('/price');
     }

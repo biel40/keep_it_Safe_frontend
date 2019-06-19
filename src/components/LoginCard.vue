@@ -155,7 +155,7 @@ export default {
       this.$axios
         .post("http://localhost:8081/user")
         .then(function(response) {
-          console.log(response.data);
+         
         })
         .catch(function(error) {
 

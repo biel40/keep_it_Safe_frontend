@@ -76,11 +76,10 @@ export default {
   },
   props: ["user"],
   created() {
+
     let userParsed = JSON.parse(localStorage.getItem("user"));
-    console.log(userParsed);
 
     let userID = userParsed.userId;
-    console.log(userID);
 
     this.$axios
       .get("http://localhost:8081/invoice/user/notVerified/" +  userID)

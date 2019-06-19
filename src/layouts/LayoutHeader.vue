@@ -186,9 +186,7 @@ export default {
   created() {
     this.isLoginUser = false;
 
-    if (localStorage.getItem("token")) {
-      console.log("localStorage", localStorage.getItem("token"));
-      
+    if (localStorage.getItem("token")) {  
       this.$classes.Utils.verifyTokenSignature(
         localStorage.getItem("token"),
         this.user
