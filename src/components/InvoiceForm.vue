@@ -283,8 +283,15 @@ export default {
     getInvoice() {
       return this.Invoice;
     },
-    updateLuggageCounters() {
-
+    updateLuggageCounters(luggages) {
+      luggages.forEach(luggage=>{
+        let countLuggage = this.InvoiceProps.luggages.filter(lugg=>{
+          return luggage.luggage_type = lugg.luggage_type;
+        }).length
+        let luggageFind = this.findLuggage(luggage.luggage_type);
+        
+        luggageFind.count = countLuggage;
+      })
 
     }
   },
@@ -306,6 +313,9 @@ export default {
             )
           );
         });
+        if (this.InvoiceProps != null) {
+          this.updateLuggageCounters(this.luggages)
+        }
       })
       .catch(error => {
         console.log(error);
@@ -315,8 +325,6 @@ export default {
     if(this.InvoiceProps != null) {
 
       this.Invoice = this.InvoiceProps;
-      this.updateLuggageCounters();
-
       this.isInvoiceEditing = true;
 
     } else {
