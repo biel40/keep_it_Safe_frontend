@@ -84,7 +84,6 @@ export default {
     this.$axios
       .get("http://localhost:8081/invoice/user/notVerified/" +  userID)
       .then(response => {
-        console.log(response);
         response.data.forEach(invoice => {
           moment.locale("es");
           invoice.start_date = moment(

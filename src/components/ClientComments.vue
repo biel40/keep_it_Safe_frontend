@@ -22,7 +22,7 @@
             />
            
             <q-chat-message
-              v-if="comment.user && comment.user.imageUrl == 'null' && isThisUserComment "
+              v-if="comment.user && comment.user.imageUrl == 'null' && comment.isThisUserComment "
               :name="comment.user.name"
               avatar="https://image.flaticon.com/icons/png/128/74/74472.png"
               :text="[comment.comment_text]"
@@ -30,7 +30,7 @@
             />
 
             <q-chat-message
-              v-if="comment.user && comment.user.imageUrl == 'null' && !isThisUserComment "
+              v-if="comment.user && comment.user.imageUrl == 'null' && !comment.isThisUserComment "
               :name="comment.user.name"
               avatar="https://image.flaticon.com/icons/png/128/74/74472.png"
               :text="[comment.comment_text]"
